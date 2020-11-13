@@ -1,7 +1,7 @@
 from typing import List
 from fastapi.security import OAuth2PasswordBearer,OAuth2PasswordRequestForm
 from jose import JWTError, jwt
-from fastapi import Depends, FastAPI, HTTPException, APIRouter, status, Response
+from fastapi import Depends, FastAPI, HTTPException, APIRouter, status, Response, BackgroundTasks
 from sqlalchemy.orm import Session
 from config.db import get_db
 from . import crud, models, schemas
@@ -11,22 +11,20 @@ from .crud import create_access_token,authenticate_user,get_current_active_user
 from datetime import timedelta
 from users_profile.schemas import Token
 from fastapi.responses import RedirectResponse
+from fastapi_mail import FastMail, MessageSchema,ConnectionConfig
+from  users_profile.email import conf
+from  starlette.responses  import  JSONResponse
+import smtplib
+
+
 
 router = APIRouter()
-
-
-
-
-# Dependency
-
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
 
 @router.post("/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(),db: Session = Depends(get_db)):
-
-
     user = authenticate_user(db , form_data.username, form_data.password)
     print(user)
     if not user:
@@ -40,7 +38,6 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         data={"sub": user.name}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
-
 
 
 
@@ -64,9 +61,17 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     return crud.create_user(db=db, user=user)
 
 
-@router.get("/logout")
-async def route_logout_and_remove_cookie():
-    response = Response('jjj')
-    response.delete_cookie(key='Authorization',domain='127.0.0.1',path='token/')
 
-    return response
+#send email password
+@router.post('/send_email')
+async def email(email:schemas.EmailSchema, db: Session = Depends(get_db)):
+    send_message = crud.get_user_by_email(db,email)
+    return send_message
+
+
+
+#user password update
+@router.put('/reset_password')
+async def reset_password(form_password:schemas.EmailRessetPassword,db: Session = Depends(get_db)):
+    new_password = crud.reset_user_password(form_password,db)
+    return new_password

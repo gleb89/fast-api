@@ -22,7 +22,7 @@ async def db_session_middleware(request: Request, call_next):
         request.state.db.close()
     return response
 
-app.include_router(views.router )
+app.include_router(views.router)
 app.include_router(routers)
 
 Base.metadata.create_all(bind=engine)

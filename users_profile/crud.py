@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from fastapi import FastAPI, Request, Response, Depends,HTTPException, status
+from fastapi.responses import JSONResponse
 from . import models, schemas
 from fastapi.security import OAuth2PasswordBearer,OAuth2PasswordRequestForm
 import bcrypt
@@ -11,7 +12,7 @@ from passlib.context import CryptContext
 from .schemas import UserAuthenticate,TokenData
 from typing import Optional
 from config.db import get_db
-
+import smtplib
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
@@ -22,20 +23,23 @@ def get_user_by_username(db: Session, name: str):
     return db.query(models.User).filter(models.User.name == name).first()
 
 
-def create_user(db: Session, user: schemas.UserCreate):
-    # hashed_password = bcrypt.hashpw(user.password.encode('utf-8'), bcrypt.gensalt())
-    hashed_password = pwd_context.hash(user.password.encode('utf-8'))
-    db_user = models.User(name=user.name, password=hashed_password,email=user.email)
-    db.add(db_user)
 
+def create_user(db: Session, user: schemas.UserCreate):
+    hashed_password = pwd_context.hash(user.password.encode('utf-8'))
+    print(hashed_password)
+    db_user = models.User(name=user.name,password=hashed_password,\
+                                                    email=user.email)
+    db.add(db_user)
     db.commit()
     db.refresh(db_user)
     return db_user
 
 
+
 #login asses tocken views
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
+
 
 
 def get_password_hash(password):
@@ -48,8 +52,11 @@ def get_user(db, name: str):
     for users in users_db:
 
         if name in users.name:
-            user_dict = db.query(models.User).filter(models.User.name == name).first()
-            return UserAuthenticate(name=user_dict.name,password=user_dict.password)
+            user_dict = db.query(models.User).filter\
+                    (models.User.name == name).first()
+            return UserAuthenticate(name=user_dict.name,\
+                            password=user_dict.password)
+
 
 
 def authenticate_user(db, username: str, password: str):
@@ -60,6 +67,7 @@ def authenticate_user(db, username: str, password: str):
     if not verify_password(password,user.password):
         return False
     return user
+
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
@@ -73,7 +81,9 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     return encoded_jwt
 
 
-async def get_current_user(token: str = Depends(oauth2_scheme),db: Session = Depends(get_db)):
+
+async def get_current_user(token: str = Depends(oauth2_scheme),\
+                            db: Session = Depends(get_db)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -93,5 +103,40 @@ async def get_current_user(token: str = Depends(oauth2_scheme),db: Session = Dep
     return user
 
 
-async def get_current_active_user(current_user: schemas.User = Depends(get_current_user)):
+
+async def get_current_active_user(current_user: schemas.User = Depends\
+                                                    (get_current_user)):
     return current_user
+
+
+
+def get_user_by_email(db, email: schemas.EmailSchema):
+    user =  db.query(models.User).filter(models.User.email == email.email).first()
+    if user:
+        message = 'для востановления пароля перейдите по ссылке\
+                http://127.0.0.1:8000/reset_password'.encode('utf-8')
+        server = smtplib.SMTP('smtp.mail.ru',587)
+        server.starttls()
+        server.login('beautyroom37@mail.ru', 'Kit241281')
+        server.sendmail('beautyroom37@mail.ru',email.email,message)
+        server.close()
+        print('kk')
+        return {'message':f'password sent email {email.email}'}
+    else:
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,\
+                                content={'message':'incorrect email'})
+
+
+
+def reset_user_password(form_pasword,db):
+    hashed_password = pwd_context.hash(form_pasword.password .encode('utf-8'))
+    user =  db.query(models.User).filter\
+            (models.User.email == form_pasword.email).update\
+                            (dict(password=hashed_password))
+
+    if user:
+        db.commit()
+        return {'message':'пароль успешно изменене'}
+    else:
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,\
+                         content={'message':'Неверно введен email'})
