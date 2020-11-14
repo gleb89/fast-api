@@ -19,7 +19,9 @@ class UserInDB(User):
 class UserCreate(User):
     password: str
 
-
+class UserLogin(BaseModel):
+    name: str
+    password: str
 
 class UserAuthenticate(User):
     password: str

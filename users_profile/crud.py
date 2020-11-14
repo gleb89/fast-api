@@ -26,7 +26,6 @@ def get_user_by_username(db: Session, name: str):
 
 def create_user(db: Session, user: schemas.UserCreate):
     hashed_password = pwd_context.hash(user.password.encode('utf-8'))
-    print(hashed_password)
     db_user = models.User(name=user.name,password=hashed_password,\
                                                     email=user.email)
     db.add(db_user)
@@ -136,7 +135,7 @@ def reset_user_password(form_pasword,db):
 
     if user:
         db.commit()
-        return {'message':'пароль успешно изменене'}
+        return JSONResponse(status_code=status.HTTP_200_OK,content={'message':'пароль успешно изменене'})
     else:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,\
                          content={'message':'Неверно введен email'})

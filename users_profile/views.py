@@ -24,9 +24,9 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
 @router.post("/token", response_model=Token)
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(),db: Session = Depends(get_db)):
-    user = authenticate_user(db , form_data.username, form_data.password)
-    print(user)
+async def login_for_access_token(form_data:schemas.UserLogin ,db: Session = Depends(get_db)):
+    user = authenticate_user(db , form_data.name, form_data.password)
+
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

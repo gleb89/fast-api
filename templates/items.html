@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>fgfgfg</h1>
+    <p></p>
+</body>
+<script>
+    function get_cookie ( cookie_name )
+    {
+      var results = document.cookie.match ( '(^|;) ?' + cookie_name + '=([^;]*)(;|$)' );
+
+      if ( results )
+        return ( unescape ( results[2] ) );
+      else
+        return null;
+    }
+
+    const token = get_cookie('access_token')
+
+ async function getResp(){
+     let resp = await fetch('http://127.0.0.1:8000/users/me/items',{
+        headers:{
+            'Authorization':`Bearer ${token}`
+        }
+     }
+     )
+     let res = await resp.json()
+     console.log('hh')
+     console.log(res)
+    let key;
+    for (key of res){
+        console.log(key)
+        let myView = document.querySelector('p');
+        myView.innerHTML +=  `<li>${key.owner}</li>`
+    }
+
+
+
+
+ };
+ getResp()
+</script>
+</html>

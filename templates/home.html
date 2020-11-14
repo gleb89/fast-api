@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="registr" class="g">
+    <h1>Регистрация</h1>
+
+    <form id="form" method="POST"  >
+        <label for="name">ваше имя</label>
+        <input class="name" type="text" name="name" placeholder="name">
+
+        <label for="email">ваш email</label>
+        <input class="email" type="text" name="email" placeholder="email">
+
+        <label for="password">введите пароль</label>
+        <input class="password" type="text" type="submit" name="password" placeholder="password">
+        <br>
+        <button class="uuu" type="submit" value="Submit"  >Регистрация</button>
+    </form>
+</div>
+<div id="login">
+    <h1>Логин</h1>
+    <form action="">
+        <label for="login">login</label>
+        <input type="text">
+        <br>
+        <label for="pass">password</label>
+        <input type="text">
+        <button>вход</button>
+    </form>
+</div>
+    <script>
+        document.getElementById('login').hidden = true;
+        let form = document.querySelector('.uuu')
+        form.onclick= scoA
+        function scoA(e){
+            e.preventDefault();
+            let name = document.querySelector('.name').value
+            let email = document.querySelector('.email').value
+            let password = document.querySelector('.password').value
+           fetch('http://127.0.0.1:8000/user', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                'name':name,
+                'email':email,
+                'password':password
+            }),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+                document.getElementById('registr').hidden = true;
+                document.getElementById('login').hidden = false;
+
+
+              console.log(data)
+
+            })
+            .catch((err) => console.log('gggg',err));
+
+
+        }
+
+    </script>
+</body>
+</html>
