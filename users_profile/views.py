@@ -1,7 +1,8 @@
 from typing import List
 from fastapi.security import OAuth2PasswordBearer,OAuth2PasswordRequestForm
 from jose import JWTError, jwt
-from fastapi import Depends, FastAPI, HTTPException, APIRouter, status, Response, BackgroundTasks
+from fastapi import Depends, FastAPI, HTTPException, APIRouter, status,\
+                                            Response, BackgroundTasks
 from sqlalchemy.orm import Session
 from config.db import get_db
 from . import crud, models, schemas
@@ -15,16 +16,15 @@ from fastapi_mail import FastMail, MessageSchema,ConnectionConfig
 from  users_profile.email import conf
 from  starlette.responses  import  JSONResponse
 import smtplib
-
-
+import threading
+import asyncio
 
 router = APIRouter()
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
-
 @router.post("/token", response_model=Token)
-async def login_for_access_token(form_data:schemas.UserLogin ,db: Session = Depends(get_db)):
+def login_for_access_token(form_data:schemas.UserLogin ,db: Session = Depends(get_db)):
     user = authenticate_user(db , form_data.name, form_data.password)
 
     if not user:
@@ -48,17 +48,20 @@ async def read_users_me(current_user: schemas.User = Depends(get_current_active_
 
 
 @router.get("/users/me/items/")
-async def read_own_items(current_user: models.User = Depends(get_current_active_user)):
-    return [{"item_id": "Foo", "owner": current_user.name}]
+async def read_own_items(current_user: models.User = Depends(get_current_active_user),users:schemas.UsId= Depends(crud.user_all)):
+    users = list(users)
+    return [{"item_id": "Foo", "name": current_user.name,'users_all':users}]
 
 
 
 @router.post("/user", response_model=schemas.UserInfo)
-def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    db_user = crud.get_user_by_username(db, name=user.name)
+async def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+
+    db_user =   await crud.get_user_by_username(db, name=user.name)
+    print(user.name,threading.current_thread().ident)
     if db_user:
         raise HTTPException(status_code=400, detail="Username already registered")
-    return crud.create_user(db=db, user=user)
+    return  crud.create_user(db=db, user=user)
 
 
 
@@ -74,4 +77,10 @@ async def email(email:schemas.EmailSchema, db: Session = Depends(get_db)):
 @router.put('/reset_password')
 async def reset_password(form_password:schemas.EmailRessetPassword,db: Session = Depends(get_db)):
     new_password = crud.reset_user_password(form_password,db)
+
+
+
     return new_password
+
+async def mess(db):
+    return db.query(models.User).filter(models.User.name == 'hh').first().name

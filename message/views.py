@@ -1,26 +1,25 @@
-from fastapi import APIRouter, WebSocket, Request
-from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
-from starlette.authentication import requires
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+from .crud import ConnectionManager
+import json
+
 
 routers = APIRouter()
-templates = Jinja2Templates(directory="templates")
-
-# @routers.get('/bbb')
-# def home():
-#     return {'hh':'jj'}
+manager = ConnectionManager()
 
 
-# @routers.get("/",response_class=HTMLResponse)
-# async def get(request:Request):
 
-#     return templates.TemplateResponse('index.html',{"request": request})
-
-
-# @routers.websocket("/ws/{client_id}")
-# async def websocket_endpoint(websocket: WebSocket, client_id: int):
-
-#     await websocket.accept()
-#     while True:
-#         data = await websocket.receive_text()
-#         await websocket.send_text(f"Message text was: {data}")
+#message
+@routers.websocket("/ws/{client_id}")
+async def websocket_endpoint(websocket: WebSocket, client_id: int):
+    await manager.connect(websocket)
+    try:
+        while True:
+            data = await websocket.receive_text()
+            json_message = json.loads(data)
+            message = json_message['mess']
+            client = json_message['user']
+            # await manager.send_personal_message( json.dumps({'message':message,'user':vv }) , websocket)
+            await manager.broadcast(json.dumps({'message':message,'user':client }))
+    except WebSocketDisconnect:
+        manager.disconnect(websocket)
+        await manager.broadcast(f"Client  left the chat")

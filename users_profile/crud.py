@@ -13,13 +13,17 @@ from .schemas import UserAuthenticate,TokenData
 from typing import Optional
 from config.db import get_db
 import smtplib
+import asyncio
+
+
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 
 #registrations
-def get_user_by_username(db: Session, name: str):
+async def get_user_by_username(db: Session, name: str):
     return db.query(models.User).filter(models.User.name == name).first()
 
 
@@ -139,3 +143,8 @@ def reset_user_password(form_pasword,db):
     else:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,\
                          content={'message':'Неверно введен email'})
+
+
+def user_all(db: Session = Depends(get_db)):
+    users =  db.query(models.User).all()
+    return users

@@ -12,12 +12,15 @@ class User(BaseModel):
 
 
 class UserInDB(User):
-    password: str
+    name: str
 
 
 
 class UserCreate(User):
     password: str
+
+class UsId(User):
+    id:int
 
 class UserLogin(BaseModel):
     name: str

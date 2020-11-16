@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Request, Response, Depends, Cookie,Header,Form
+from fastapi import FastAPI, Request, Response,\
+                     Depends, Cookie, Header, Form
 from config.base import Base
 from config.db import engine
 from config.db import SessionLocal
@@ -8,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.templating import Jinja2Templates
 from typing import Optional
 from pydantic import BaseModel
+from fastapi.responses import RedirectResponse
 
 app = FastAPI()
 
@@ -27,18 +29,32 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get('/',tags=["templates"])
-def hh(request: Request):
+@app.get('/', tags=["templates"])
+def home(request: Request):
     return templates.TemplateResponse("home.html", {"request": request,})
 
-@app.get('/login',tags=["templates"])
-def hh(request: Request):
+
+
+@app.get('/login', tags=["templates"])
+def login(request: Request):
     return templates.TemplateResponse("login.html", {"request": request,})
 
 
-@app.get('/item',tags=["templates"])
-def hh(request: Request):
+
+
+@app.get('/item', tags=["templates"])
+def item(request: Request):
     return templates.TemplateResponse("items.html", {"request": request,})
+
+
+@app.get('/message', tags=["templates"])
+def sendmessage(request: Request):
+    return templates.TemplateResponse("message.html", {"request": request,})
+
+
+@app.get('/mess', tags=["templates"])
+def sendmessage(request: Request):
+    return templates.TemplateResponse("rer.html", {"request": request,})
 
 @app.middleware("http")
 async def db_session_middleware(request: Request, call_next):

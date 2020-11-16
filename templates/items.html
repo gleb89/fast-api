@@ -7,9 +7,74 @@
 </head>
 <body>
     <h1>fgfgfg</h1>
+    <h2></h2>
+    <h2></h2>
     <p></p>
+    <h1>real midl Chat</h1>
+    <form action="" onsubmit="sendMessage(event)">
+        <input type="text" id="messageText" autocomplete="off"/>
+        <input type="hidden"  id="user">
+        <!-- <select name="" id="user">
+            <option disabled>Выберите юсера</option>
+        </select> -->
+
+        <button>Send</button>
+    </form>
+    <ul id='messages'>
+    </ul>
 </body>
 <script>
+    var client_id = Date.now()
+    console.log(client_id)
+    var ws = new WebSocket("ws://localhost:8000/ws/1");
+
+    ws.onmessage = async function(event) {
+        var messages = document.getElementById('messages')
+        var message = document.createElement('li')
+        let message_data = JSON.parse(event.data)
+        let user_message = message_data.message
+        let user= message_data.user
+        let resp = await fetch('http://127.0.0.1:8000/users/me/items',{
+            headers:{
+                'Authorization':`Bearer ${token}`
+            }
+         }
+         )
+         console.log(user_message)
+        let res = await resp.json()
+        let key;
+        for (key of res){
+            if (key.name == user){
+
+                var content = document.createTextNode(`я отправил: ${user_message}`);
+                message.appendChild(content)
+                messages.appendChild(message)
+
+                console.log(document.createTextNode)
+                console.log(content)
+
+            }
+            if (key.name != user){
+                var content = document.createTextNode(`${user } отправил: ${user_message}`);
+                message.appendChild(content)
+                messages.appendChild(message)
+            }
+
+        };
+    }
+    function sendMessage(event) {
+        let input = document.getElementById("messageText")
+        let us = document.getElementById('user')
+        console.log(us.value)
+        let uu = JSON.stringify({
+            'mess':input.value,
+            'user':us.value
+        })
+
+        ws.send(uu)
+        input.value = ''
+        event.preventDefault()
+    }
     function get_cookie ( cookie_name )
     {
       var results = document.cookie.match ( '(^|;) ?' + cookie_name + '=([^;]*)(;|$)' );
@@ -29,20 +94,21 @@
         }
      }
      )
-     let res = await resp.json()
-     console.log('hh')
-     console.log(res)
+    let res = await resp.json()
     let key;
     for (key of res){
-        console.log(key)
         let myView = document.querySelector('p');
-        myView.innerHTML +=  `<li>${key.owner}</li>`
+        let myViewtwo = document.querySelector('#user');
+        myView.innerHTML +=  `<li>${key.name}</li>`
+        //for (let it of key.users_all){
+            //let user_name = it.name
+            myViewtwo.value = key.name
+           // `<option value="${user_name}">${user_name}</option>`
+
+    //}
     }
-
-
-
-
  };
  getResp()
+
 </script>
 </html>
