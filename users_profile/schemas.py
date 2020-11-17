@@ -2,6 +2,8 @@ from typing import List, Optional
 from pydantic import BaseModel
 from typing import List
 from pydantic import EmailStr
+import uuid
+import pydantic
 
 
 
@@ -32,6 +34,26 @@ class UserAuthenticate(User):
 
 class UserInfo(User):
     id: int
+
+    class Config:
+        orm_mode = True
+
+
+#user  chat room
+class UserInRoom(BaseModel):
+    id: Optional[str]
+
+    @pydantic.validator("id", pre=True, always=True)
+    def default_id(cls, v):
+        return v or str(uuid.uuid4())
+
+class UserInChat(BaseModel):
+    id: Optional[str]
+
+
+    @pydantic.validator("id", pre=True, always=True)
+    def default_id(cls, v):
+        return v or str(uuid.uuid4())
 
     class Config:
         orm_mode = True

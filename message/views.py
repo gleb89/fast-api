@@ -1,6 +1,11 @@
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from .crud import ConnectionManager
 import json
+from .schemas import RoomCreate
+from config.db import  get_db
+from fastapi import Depends
+from .models import Room
+from sqlalchemy.orm import Session
 
 
 routers = APIRouter()
@@ -23,3 +28,11 @@ async def websocket_endpoint(websocket: WebSocket, client_id: int):
     except WebSocketDisconnect:
         manager.disconnect(websocket)
         await manager.broadcast(f"Client  left the chat")
+
+@routers.post('/newmessage')
+def create_user(room: RoomCreate,db: Session = Depends(get_db)):
+    room = Room(owner_id=room.owner_id,date=room.date)
+    db.add(room)
+    db.commit()
+    db.refresh(room)
+    return room

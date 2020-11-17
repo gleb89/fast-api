@@ -13,7 +13,6 @@ from datetime import timedelta
 from users_profile.schemas import Token
 from fastapi.responses import RedirectResponse
 from fastapi_mail import FastMail, MessageSchema,ConnectionConfig
-from  users_profile.email import conf
 from  starlette.responses  import  JSONResponse
 import smtplib
 import threading
