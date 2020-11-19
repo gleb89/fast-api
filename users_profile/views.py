@@ -35,7 +35,7 @@ def login_for_access_token(form_data:schemas.UserLogin ,db: Session = Depends(ge
 
 @user_router.get("/users/me/", response_model=schemas.User)
 async def read_users_me(current_user: schemas.User = Depends(get_current_active_user)):
-    """Return user in auth"""
+    """Return user in auth items"""
     return current_user
 
 
