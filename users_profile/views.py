@@ -1,9 +1,9 @@
 from typing import List
-from fastapi import Depends, FastAPI, HTTPException, APIRouter, status
+from fastapi import Depends, FastAPI, HTTPException, APIRouter, status, File, UploadFile
 from sqlalchemy.orm import Session
 from config.db import get_db
 from . import crud, models, schemas
-from .crud import create_access_token,authenticate_user,get_current_active_user
+from .crud import create_access_token,authenticate_user,get_current_active_user, image_add
 from datetime import timedelta
 from users_profile.schemas import Token
 
@@ -71,3 +71,10 @@ async def reset_password(form_password:schemas.EmailRessetPassword,db: Session =
     """User password update"""
     new_password = crud.reset_user_password(form_password,db)
     return new_password
+
+
+@user_router.put('/add-image/{user_id}')
+async def image_add_user(user_id:int,image: UploadFile = File(...),db: Session = Depends(get_db)):
+    """User image avatar add"""
+    avatar = await image_add(image,user_id,db)
+    return avatar

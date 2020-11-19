@@ -13,6 +13,7 @@ from .schemas import UserAuthenticate,TokenData
 from typing import Optional
 from config.db import get_db
 import smtplib
+import shutil
 
 
 
@@ -129,7 +130,7 @@ def get_user_by_email(db, email: schemas.EmailSchema):
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,\
                                 content={'message':'incorrect email'})
 
-
+authenticate_user
 
 def reset_user_password(form_pasword,db):
     hashed_password = pwd_context.hash(form_pasword.password .encode('utf-8'))
@@ -148,3 +149,14 @@ def reset_user_password(form_pasword,db):
 def user_all(db: Session = Depends(get_db)):
     users =  db.query(models.User).all()
     return users
+
+
+
+async def image_add(image,user_id,db):
+    with open(f"static/images/{image.filename}", "wb") as buffer:
+        shutil.copyfileobj(image.file, buffer)
+        avatar = f'http://127.0.0.1:8000/static/images/{image.filename}'
+        user =  db.query(models.User).filter(models.User.id == user_id).update\
+                                                    (dict(avatar=avatar))
+        db.commit()
+    return avatar

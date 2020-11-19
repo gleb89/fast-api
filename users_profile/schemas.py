@@ -17,6 +17,9 @@ class User(BaseModel):
 class UserInDB(User):
     name: str
 
+class UserIMage(User):
+    avatar: str = None
+
 
 
 class UserCreate(BaseModel):

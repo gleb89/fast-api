@@ -47,4 +47,5 @@ app.include_router(user_router, tags=["users"])
 app.include_router(chat_router, tags=["messages and room"])
 app.include_router(templates_router, tags=["Templates"])
 
+
 Base.metadata.create_all(bind=engine)
