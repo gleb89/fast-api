@@ -13,7 +13,7 @@ class User(Base):
     email = Column(String, unique=True, index=True)
     password = Column(String)
     is_active = Column(Boolean, default=True)
-    room_id =  Column(Integer, ForeignKey("rooms.id"))
+    # room_id =  Column(Integer, ForeignKey("rooms.id"))
 
     # room = relationship("Room",foreign_keys="[Room.billing_address_id]")
 

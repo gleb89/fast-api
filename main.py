@@ -1,19 +1,18 @@
-from fastapi import FastAPI, Request, Response,\
-                     Depends, Cookie, Header, Form
+from fastapi import FastAPI, Request, Response
 from config.base import Base
 from config.db import engine
 from config.db import SessionLocal
-from users_profile import views
-from message.views import routers
+from users_profile.views import user_router
+from message.views import chat_router
+from templates.views import templates_router
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.templating import Jinja2Templates
-from typing import Optional
-from pydantic import BaseModel
-from fastapi.responses import RedirectResponse
+from fastapi.staticfiles import StaticFiles
+
+
 
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
-templates = Jinja2Templates(directory="templates")
 origins = [
     "http://localhost.tiangolo.com",
     "https://localhost.tiangolo.com",
@@ -21,40 +20,7 @@ origins = [
     "http://localhost:8080",
 ]
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
-@app.get('/', tags=["templates"])
-def home(request: Request):
-    return templates.TemplateResponse("home.html", {"request": request,})
-
-
-
-@app.get('/login', tags=["templates"])
-def login(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request,})
-
-
-
-
-@app.get('/item', tags=["templates"])
-def item(request: Request):
-    return templates.TemplateResponse("items.html", {"request": request,})
-
-
-@app.get('/message', tags=["templates"])
-def sendmessage(request: Request):
-    return templates.TemplateResponse("message.html", {"request": request,})
-
-
-@app.get('/mess', tags=["templates"])
-def sendmessage(request: Request):
-    return templates.TemplateResponse("rer.html", {"request": request,})
 
 @app.middleware("http")
 async def db_session_middleware(request: Request, call_next):
@@ -66,7 +32,19 @@ async def db_session_middleware(request: Request, call_next):
         request.state.db.close()
     return response
 
-app.include_router(views.router)
-app.include_router(routers)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+
+app.include_router(user_router, tags=["users"])
+app.include_router(chat_router, tags=["messages and room"])
+app.include_router(templates_router, tags=["Templates"])
 
 Base.metadata.create_all(bind=engine)

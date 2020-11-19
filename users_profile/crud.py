@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from fastapi import FastAPI, Request, Response, Depends,HTTPException, status
 from fastapi.responses import JSONResponse
 from . import models, schemas
-from fastapi.security import OAuth2PasswordBearer,OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer
 import bcrypt
 from config.db import SECRET_KEY, ALGORITHM
 from datetime import timedelta
@@ -13,12 +13,13 @@ from .schemas import UserAuthenticate,TokenData
 from typing import Optional
 from config.db import get_db
 import smtplib
-import asyncio
+
 
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
 
 
 
@@ -30,8 +31,7 @@ async def get_user_by_username(db: Session, name: str):
 
 def create_user(db: Session, user: schemas.UserCreate):
     hashed_password = pwd_context.hash(user.password.encode('utf-8'))
-    db_user = models.User(name=user.name,password=hashed_password,\
-                                                    email=user.email)
+    db_user = models.User(name=user.name,password=hashed_password)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
@@ -58,7 +58,7 @@ def get_user(db, name: str):
             user_dict = db.query(models.User).filter\
                     (models.User.name == name).first()
             return UserAuthenticate(name=user_dict.name,\
-                            password=user_dict.password)
+                            password=user_dict.password,id=user_dict.id,email=user_dict.email)
 
 
 

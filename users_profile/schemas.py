@@ -8,6 +8,7 @@ import pydantic
 
 
 class User(BaseModel):
+    id: int
     name: str
     email: Optional[str] = None
 
@@ -18,7 +19,8 @@ class UserInDB(User):
 
 
 
-class UserCreate(User):
+class UserCreate(BaseModel):
+    name: str
     password: str
 
 class UsId(User):

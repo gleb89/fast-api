@@ -1,29 +1,22 @@
 from typing import List
-from fastapi.security import OAuth2PasswordBearer,OAuth2PasswordRequestForm
-from jose import JWTError, jwt
-from fastapi import Depends, FastAPI, HTTPException, APIRouter, status,\
-                                            Response, BackgroundTasks
+from fastapi import Depends, FastAPI, HTTPException, APIRouter, status
 from sqlalchemy.orm import Session
 from config.db import get_db
 from . import crud, models, schemas
-from config.db import SessionLocal, engine
-from . import  models
 from .crud import create_access_token,authenticate_user,get_current_active_user
 from datetime import timedelta
 from users_profile.schemas import Token
-from fastapi.responses import RedirectResponse
-from fastapi_mail import FastMail, MessageSchema,ConnectionConfig
-from  starlette.responses  import  JSONResponse
-import smtplib
-import threading
-import asyncio
 
-router = APIRouter()
+
+
+user_router = APIRouter()
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
-@router.post("/token", response_model=Token)
+
+@user_router.post("/token", response_model=Token)
 def login_for_access_token(form_data:schemas.UserLogin ,db: Session = Depends(get_db)):
+    """Return jwt token,authorization"""
     user = authenticate_user(db , form_data.name, form_data.password)
 
     if not user:
@@ -40,46 +33,41 @@ def login_for_access_token(form_data:schemas.UserLogin ,db: Session = Depends(ge
 
 
 
-@router.get("/users/me/", response_model=schemas.User)
+@user_router.get("/users/me/", response_model=schemas.User)
 async def read_users_me(current_user: schemas.User = Depends(get_current_active_user)):
+    """Return user in auth"""
     return current_user
 
 
 
-@router.get("/users/me/items/")
-async def read_own_items(current_user: models.User = Depends(get_current_active_user),users:schemas.UsId= Depends(crud.user_all)):
+@user_router.get("/users/me/items/")
+async def read_own_items(current_user: schemas.User = Depends(get_current_active_user),users:schemas.UsId= Depends(crud.user_all)):
+    """return user and user all"""
     users = list(users)
-    return [{"item_id": "Foo", "name": current_user.name,'users_all':users}]
+    return [{"item_id": "Foo", "user": current_user,'users_all':users}]
 
 
 
-@router.post("/user", response_model=schemas.UserInfo)
+@user_router.post("/user", response_model=schemas.UserInfo)
 async def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-
+    """Registration user"""
     db_user =   await crud.get_user_by_username(db, name=user.name)
-    print(user.name,threading.current_thread().ident)
     if db_user:
         raise HTTPException(status_code=400, detail="Username already registered")
     return  crud.create_user(db=db, user=user)
 
 
 
-#send email password
-@router.post('/send_email')
+@user_router.post('/send_email')
 async def email(email:schemas.EmailSchema, db: Session = Depends(get_db)):
+    """Send email password(reset)"""
     send_message = crud.get_user_by_email(db,email)
     return send_message
 
 
 
-#user password update
-@router.put('/reset_password')
+@user_router.put('/reset_password')
 async def reset_password(form_password:schemas.EmailRessetPassword,db: Session = Depends(get_db)):
+    """User password update"""
     new_password = crud.reset_user_password(form_password,db)
-
-
-
     return new_password
-
-async def mess(db):
-    return db.query(models.User).filter(models.User.name == 'hh').first().name
