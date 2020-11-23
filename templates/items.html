@@ -29,7 +29,7 @@
 
     var client_id = Date.now()
     console.log(client_id)
-    var ws = new WebSocket("ws://localhost:8000/ws/1");
+    var ws = new WebSocket("https://tioooo.herokuapp.com/ws/1");
 
     ws.onmessage = async function(event) {
         var messages = document.getElementById('messages')
@@ -37,7 +37,7 @@
         let message_data = JSON.parse(event.data)
         let user_message = message_data.message
         let user= message_data.user
-        let resp = await fetch('http://127.0.0.1:8000/users/me/items',{
+        let resp = await fetch('/users/me/items',{
             headers:{
                 'Authorization':`Bearer ${token}`
             }
@@ -93,7 +93,7 @@
     const token = get_cookie('access_token')
 
  async function getResp(){
-     let resp = await fetch('http://127.0.0.1:8000/users/me/items',{
+     let resp = await fetch('/users/me/items',{
         headers:{
             'Authorization':`Bearer ${token}`
         }

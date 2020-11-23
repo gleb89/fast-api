@@ -33,7 +33,7 @@
         let name = document.querySelector('.name').value
 
         let password = document.querySelector('.password').value
-       fetch('http://127.0.0.1:8000/token', {
+       fetch('/token', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
