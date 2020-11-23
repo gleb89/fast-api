@@ -50,4 +50,4 @@ app.include_router(templates_router, tags=["Templates"])
 app.include_router(booking_router, tags=["booking"])
 
 
-# Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
