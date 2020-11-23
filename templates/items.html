@@ -29,7 +29,7 @@
 
     var client_id = Date.now()
     console.log(client_id)
-    var ws = new WebSocket("https://tioooo.herokuapp.com/ws/1");
+    var ws = new WebSocket("ws://tioooo.herokuapp.com/ws/1");
 
     ws.onmessage = async function(event) {
         var messages = document.getElementById('messages')
