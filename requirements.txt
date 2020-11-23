@@ -46,9 +46,3 @@ urllib3==1.25.11
 uvicorn==0.11.8
 uvloop==0.14.0
 websockets==8.1
-wrapt==1.11.2
-mccabe==0.6.1
-colorama==0.4.3
-astroid==2.3.3
-lazy-object-proxy==1.4.3
-mccabe==0.6.1
