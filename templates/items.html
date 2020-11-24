@@ -31,6 +31,7 @@
     console.log(client_id)
     var ws = new WebSocket("wss://glebhleb.herokuapp.com/ws/1");
 
+
     ws.onmessage = async function(event) {
         var messages = document.getElementById('messages')
         var message = document.createElement('li')

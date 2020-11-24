@@ -1,5 +1,6 @@
 from typing import List
 from fastapi import Depends, FastAPI, HTTPException, APIRouter, status, File, UploadFile
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from config.db import get_db
 from . import crud, models, schemas
@@ -15,9 +16,41 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
 @user_router.post("/token", response_model=Token)
+def login_for_access_token(form_data:OAuth2PasswordRequestForm = Depends() ,db: Session = Depends(get_db)):
+    print(form_data)
+    """Return jwt token,authorization for docs panel"""
+    user = authenticate_user(db , form_data.username, form_data.password)
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user.name}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
+
+
+@user_router.post("/login", response_model=Token)
 def login_for_access_token(form_data:schemas.UserLogin ,db: Session = Depends(get_db)):
     """Return jwt token,authorization"""
     user = authenticate_user(db , form_data.name, form_data.password)
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user.name}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
 
     if not user:
         raise HTTPException(

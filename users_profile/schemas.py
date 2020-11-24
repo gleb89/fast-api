@@ -17,6 +17,9 @@ class User(BaseModel):
 class UserInDB(User):
     name: str
 
+class UserInDfB(User):
+    hashed_password: str
+
 class UserIMage(User):
     avatar: str = None
 
