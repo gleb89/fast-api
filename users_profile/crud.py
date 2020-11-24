@@ -155,7 +155,7 @@ def user_all(db: Session = Depends(get_db)):
 async def image_add(image,user_id,db):
     with open(f"static/images/{image.filename}", "wb") as buffer:
         shutil.copyfileobj(image.file, buffer)
-        avatar = f'https://glebhleb.herokuapp.com/0/static/images/{image.filename}'
+        avatar = f'https://glebhleb.herokuapp.com/static/images/{image.filename}'
         user =  db.query(models.User).filter(models.User.id == user_id).update\
                                                     (dict(avatar=avatar))
         db.commit()
