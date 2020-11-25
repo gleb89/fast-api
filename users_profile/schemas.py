@@ -29,12 +29,13 @@ class UserCreate(BaseModel):
     name: str
     password: str
     email: Optional[str] = None
+    city:str
 
 class UsId(User):
     id:int
 
 class UserLogin(BaseModel):
-    name: str
+    email: Optional[str] = None
     password: str
 
 class UserAuthenticate(User):
@@ -43,6 +44,7 @@ class UserAuthenticate(User):
 
 class UserInfo(User):
     id: int
+    city:str
 
     class Config:
         orm_mode = True
@@ -77,7 +79,7 @@ class Token(BaseModel):
 
 
 class TokenData(BaseModel):
-    name: Optional[str] = None
+    email: Optional[str] = None
 
 
 

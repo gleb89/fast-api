@@ -25,14 +25,15 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 #registrations
-async def get_user_by_username(db: Session, name: str):
-    return db.query(models.User).filter(models.User.name == name).first()
+async def get_user_by_username(db: Session, email: str):
+    return db.query(models.User).filter(models.User.email == email).first()
 
+get_user_by_username
 
 
 def create_user(db: Session, user: schemas.UserCreate):
     hashed_password = pwd_context.hash(user.password.encode('utf-8'))
-    db_user = models.User(name=user.name,password=hashed_password,email = user.email)
+    db_user = models.User(name=user.name,password=hashed_password,email = user.email,city = user.city)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
@@ -45,27 +46,26 @@ def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
 
-
+TokenData
 def get_password_hash(password):
     return pwd_context.hash(password)
 
 
 
-def get_user(db, name: str):
+def get_user(db, email: str):
     users_db = db.query(models.User).all()
     for users in users_db:
+        if email == users.email:
 
-        if name in users.name:
             user_dict = db.query(models.User).filter\
-                    (models.User.name == name).first()
+                    (models.User.email == email).first()
             return UserAuthenticate(name=user_dict.name,\
                             password=user_dict.password,id=user_dict.id,email=user_dict.email)
 
 
 
-def authenticate_user(db, username: str, password: str):
-    user = get_user(db, username)
-
+def authenticate_user(db, email: str, password: str):
+    user = get_user(db, email)
     if not user:
         return False
     if not verify_password(password,user.password):
@@ -95,13 +95,13 @@ async def get_current_user(token: str = Depends(oauth2_scheme),\
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        name: str = payload.get("sub")
-        if name is None:
+        email: str = payload.get("sub")
+        if email is None:
             raise credentials_exception
-        token_data = TokenData(name=name)
+        token_data = TokenData(email=email)
     except JWTError:
         raise credentials_exception
-    user = get_user(db, name=token_data.name)
+    user = get_user(db, email=token_data.email)
     if user is None:
         raise credentials_exception
     return user

@@ -12,6 +12,7 @@ class User(Base):
     name = Column(String)
     email = Column(String, unique=True, index=True)
     password = Column(String)
+    city = Column(String)
     avatar = Column( String(100))
     is_active = Column(Boolean, default=True)
 
