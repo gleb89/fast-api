@@ -28,6 +28,7 @@ class UserIMage(User):
 class UserCreate(BaseModel):
     name: str
     password: str
+    email: Optional[str] = None
 
 class UsId(User):
     id:int

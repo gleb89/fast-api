@@ -32,7 +32,7 @@ async def get_user_by_username(db: Session, name: str):
 
 def create_user(db: Session, user: schemas.UserCreate):
     hashed_password = pwd_context.hash(user.password.encode('utf-8'))
-    db_user = models.User(name=user.name,password=hashed_password)
+    db_user = models.User(name=user.name,password=hashed_password,email = user.email)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
@@ -112,7 +112,7 @@ async def get_current_active_user(current_user: schemas.User = Depends\
                                                     (get_current_user)):
     return current_user
 
-
+get_user_by_username
 
 def get_user_by_email(db, email: schemas.EmailSchema):
     user =  db.query(models.User).filter(models.User.email == email.email).first()
