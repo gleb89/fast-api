@@ -33,7 +33,7 @@ get_user_by_username
 
 def create_user(db: Session, user: schemas.UserCreate):
     hashed_password = pwd_context.hash(user.password.encode('utf-8'))
-    db_user = models.User(name=user.name,password=hashed_password,email = user.email,city = user.city)
+    db_user = models.User(name=user.name,password=hashed_password,email = user.email,city = user.city,master = user.master)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)

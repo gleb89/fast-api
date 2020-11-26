@@ -30,6 +30,7 @@ class UserCreate(BaseModel):
     password: str
     email: Optional[str] = None
     city:str
+    master:bool
 
 class UsId(User):
     id:int
@@ -45,6 +46,7 @@ class UserAuthenticate(User):
 class UserInfo(User):
     id: int
     city:str
+    master:bool
 
     class Config:
         orm_mode = True
