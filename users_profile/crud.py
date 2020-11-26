@@ -60,7 +60,7 @@ def get_user(db, email: str):
             user_dict = db.query(models.User).filter\
                     (models.User.email == email).first()
             return UserAuthenticate(name=user_dict.name,\
-                            password=user_dict.password,id=user_dict.id,email=user_dict.email)
+                            password=user_dict.password,id=user_dict.id,email=user_dict.email,master = user_dict.master)
 
 
 
@@ -108,7 +108,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme),\
 
 
 
-async def get_current_active_user(current_user: schemas.User = Depends\
+async def get_current_active_user(current_user: schemas.UserInfo = Depends\
                                                     (get_current_user)):
     return current_user
 

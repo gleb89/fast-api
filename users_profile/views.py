@@ -64,7 +64,7 @@ async def read_users_me(current_user: schemas.User = Depends(get_current_active_
 
 
 @user_router.get("/users/me/items/")
-async def read_own_items(current_user: schemas.User = Depends(get_current_active_user),users:schemas.UsId= Depends(crud.user_all)):
+async def read_own_items(current_user: schemas.UserInfo = Depends(get_current_active_user),users:schemas.UsId= Depends(crud.user_all)):
     """return user and user all"""
     users = list(users)
     return [{"item_id": "Foo", "user": current_user,'users_all':users}]

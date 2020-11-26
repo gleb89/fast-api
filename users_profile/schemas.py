@@ -11,6 +11,8 @@ class User(BaseModel):
     id: int
     name: str
     email: Optional[str] = None
+    master:bool
+
 
 
 
