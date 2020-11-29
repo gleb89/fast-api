@@ -46,9 +46,9 @@ class UserAuthenticate(User):
 
 
 class UserInfo(User):
-    id: int
     city:str
     master:bool
+    avatar:str
 
     class Config:
         orm_mode = True
