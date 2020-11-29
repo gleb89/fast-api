@@ -114,6 +114,14 @@ async def get_current_active_user(current_user: schemas.UserInfo = Depends\
 
 get_user_by_username
 
+def user_by_login(db,email):
+    user =  db.query(models.User).filter(models.User.email == email).first()
+    if user:
+        return user
+    else:
+        return None
+
+
 def get_user_by_email(db, email: schemas.EmailSchema):
     user =  db.query(models.User).filter(models.User.email == email.email).first()
     if user:

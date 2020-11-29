@@ -4,7 +4,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from config.db import get_db
 from . import crud, models, schemas
-from .crud import create_access_token,authenticate_user,get_current_active_user, image_add
+from .crud import create_access_token,authenticate_user,get_current_active_user, image_add, user_by_login
 from datetime import timedelta
 from users_profile.schemas import Token
 
@@ -35,11 +35,11 @@ def login_for_access_token(form_data:OAuth2PasswordRequestForm = Depends() ,db: 
 
 
 
-@user_router.post("/login", response_model=Token)
+@user_router.post("/login")
 def login_for_access_token(form_data:schemas.UserLogin ,db: Session = Depends(get_db)):
     """Return jwt token,authorization"""
     user = authenticate_user(db , form_data.email, form_data.password)
-    print(user)
+    user_login = user_by_login(db,form_data.email)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -50,7 +50,7 @@ def login_for_access_token(form_data:schemas.UserLogin ,db: Session = Depends(ge
     access_token = create_access_token(
         data={"sub": user.email}, expires_delta=access_token_expires
     )
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {"access_token": access_token, "token_type": "bearer",'user':user_login}
 
 
 
