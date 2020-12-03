@@ -6,6 +6,7 @@ from users_profile.views import user_router
 from message.views import chat_router
 from templates.views import templates_router
 from booking.views  import booking_router
+from rating.views  import rating_router
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
@@ -48,6 +49,7 @@ app.include_router(user_router, tags=["users"])
 app.include_router(chat_router, tags=["messages and room"])
 app.include_router(templates_router, tags=["Templates"])
 app.include_router(booking_router, tags=["booking"])
+app.include_router(rating_router, tags=["rating"])
 
 
 Base.metadata.create_all(bind=engine)
