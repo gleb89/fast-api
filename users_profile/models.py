@@ -15,7 +15,7 @@ class User(Base):
     city = Column(String)
     avatar = Column( String(100))
     is_active = Column(Boolean, default=True)
-    master = Column(Boolean, default=True)
+    master = Column(Boolean, default=False)
 
 
 

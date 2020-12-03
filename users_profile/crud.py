@@ -155,7 +155,8 @@ def reset_user_password(form_pasword,db):
 
 
 def user_all(db: Session = Depends(get_db)):
-    users =  db.query(models.User).all()
+    users =  db.query(models.User).filter(models.User.master == True).all()
+
     return users
 
 
