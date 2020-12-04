@@ -6,3 +6,7 @@ class RatingBase(BaseModel):
     user_id:int
     owner_id:int
     rating:int
+
+class UserRating(BaseModel):
+    user_id:int
+    rating:int

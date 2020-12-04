@@ -64,12 +64,11 @@ async def read_users_me(current_user: schemas.User = Depends(get_current_active_
 
 
 @user_router.get("/users")
-async def read_own_items(users:schemas.UsId= Depends(crud.user_all),page: int = 0, limit: int = 3):
+async def read_own_items(db: Session = Depends(get_db)):
     """return user all"""
-    users = users
-    if page >= 1:
-        return {'users':users[page:page + limit]}
+    users = await crud.user_all(db)
     return {'users':users}
+
 
 
 

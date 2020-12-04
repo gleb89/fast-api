@@ -14,6 +14,7 @@ from typing import Optional
 from config.db import get_db
 import smtplib
 import shutil
+from .schemas import UsId
 
 
 
@@ -28,7 +29,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 async def get_user_by_username(db: Session, email: str):
     return db.query(models.User).filter(models.User.email == email).first()
 
-get_user_by_username
+
 
 
 def create_user(db: Session, user: schemas.UserCreate):
@@ -112,7 +113,7 @@ async def get_current_active_user(current_user: schemas.UserInfo = Depends\
                                                     (get_current_user)):
     return current_user
 
-get_user_by_username
+
 
 def user_by_login(db,email):
     user =  db.query(models.User).filter(models.User.email == email).first()
@@ -138,7 +139,7 @@ def get_user_by_email(db, email: schemas.EmailSchema):
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,\
                                 content={'message':'incorrect email'})
 
-authenticate_user
+
 
 def reset_user_password(form_pasword,db):
     hashed_password = pwd_context.hash(form_pasword.password .encode('utf-8'))
@@ -154,10 +155,30 @@ def reset_user_password(form_pasword,db):
                          content={'message':'Неверно введен email'})
 
 
-def user_all(db: Session = Depends(get_db)):
-    users =  db.query(models.User).filter(models.User.master == True).all()
 
-    return users
+async def rati(users):
+    list_user = []
+    for user in users:
+        user_schema = {
+        "email": user.email,
+        "id": user.id,
+        "master": user.master,
+        "avatar": user.avatar,
+        "name": user.name,
+        "is_active": user.is_active,
+        "city": user.city,
+        "children": user.children,
+        "rating":user.bb
+        }
+        list_user.append(user_schema)
+    return list_user
+
+async def user_all(db):
+    users =  db.query(models.User).filter(models.User.master == True).all()
+    list_users = await rati(users)
+    users_rating = [i.children for i in users]
+    return list_users
+
 
 
 

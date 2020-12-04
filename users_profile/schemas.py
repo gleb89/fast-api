@@ -36,10 +36,14 @@ class UserCreate(BaseModel):
 
 class UsId(User):
     id:int
+    rating:int
+
 
 class UserLogin(BaseModel):
     email: Optional[str] = None
     password: str
+
+
 
 class UserAuthenticate(User):
     password: str
