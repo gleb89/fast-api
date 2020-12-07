@@ -8,7 +8,6 @@ class Booking(Base):
     id = Column(Integer, primary_key=True, index=True)
     date = Column(Date)
     user_id = Column(Integer, ForeignKey("users.id"))
-
     user = relationship("User",foreign_keys=[user_id])
 
 
@@ -21,8 +20,11 @@ class TimeBooking(Base):
     id = Column(Integer, primary_key=True, index=True)
     time = Column(Time)
     is_booking = Column(Boolean, default=True)
+    master_confirm = Column(Boolean, default=False)
     booking_id = Column(Integer, ForeignKey("booking.id"))
+    owner_id = Column(Integer, ForeignKey("users.id"))
 
+    owner = relationship("User",foreign_keys=[owner_id])
     booking = relationship("Booking",foreign_keys=[booking_id])
 
 

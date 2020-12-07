@@ -172,12 +172,17 @@ async def rati(users):
         }
         list_user.append(user_schema)
     return list_user
+from rating.models import Rating
+from sqlalchemy import func
 
 async def user_all(db):
     users =  db.query(models.User).filter(models.User.master == True).all()
     list_users = await rati(users)
     users_rating = [i.children for i in users]
+
     return list_users
+
+
 
 
 

@@ -28,10 +28,17 @@ async def return_date_user(user_id,db):
     else:
         raise HTTPException(status_code=400, detail="Not date")
 
+async def return_time_date_all(date,user_id,db):
+    date_all= db.query(Booking).filter(Booking.user_id == user_id,Booking.date == date).first()
 
+    if date_all:
+        time_all= db.query(TimeBooking).filter(TimeBooking.booking_id == date_all.id).all()
+        return time_all
+    else:
+        return None
 
 async def return_time_date(date_id,db):
-    time_all = db.query(TimeBooking).filter(TimeBooking.booking_id  == date_id, TimeBooking.is_booking == True ).all()
+    time_all = db.query(TimeBooking).filter(TimeBooking.booking_id  == date_id, TimeBooking.is_booking == True).all()
     if time_all:
             return time_all
     else:
@@ -47,9 +54,8 @@ async def delete_time_date(time_id,db):
 
 
 
-async def update_time_date(time_id,db):
-    time = db.query(TimeBooking).filter(TimeBooking.id  == time_id.id).update\
-                                                        (dict(is_booking=time_id.is_booking))
-
+async def check_time_owner(time,db):
+    db.query(TimeBooking).filter(TimeBooking.id  == time.id).update\
+                (dict(is_booking= False, owner_id = time.owner_id))
     db.commit()
-    return JSONResponse(status_code=200, content={'message':"Time update bool"})
+    return JSONResponse(status_code=200, content={'message':"Time update user bool"})

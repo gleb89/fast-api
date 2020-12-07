@@ -11,8 +11,6 @@ class BookingBase(BaseModel):
 
 
 
-
-
 class BookingCreate(BaseModel):
     date: Optional[date]
 
@@ -32,3 +30,9 @@ class BookingTimeCreate(BaseModel):
     booking_id:int
     time: Optional[time]
     is_booking:bool
+
+
+class BookingTimeCheck(BaseModel):
+    id:int
+    is_booking:bool
+    owner_id:int
