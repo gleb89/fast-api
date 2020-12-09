@@ -21,6 +21,7 @@ class TimeBooking(Base):
     time = Column(Time)
     is_booking = Column(Boolean, default=True)
     master_confirm = Column(Boolean, default=False)
+    phone_owner = Column(String)
     booking_id = Column(Integer, ForeignKey("booking.id"))
     owner_id = Column(Integer, ForeignKey("users.id"))
 
