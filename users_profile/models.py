@@ -30,8 +30,8 @@ class User(Base):
             count_rating.append(num_rating)
         count_rating = len(count_rating)
         if rating != 0:
-            return rating/count_rating
+            return round(rating/count_rating)
         else:
-            return rating
+            return round(rating)
 
 users = User.__table__
