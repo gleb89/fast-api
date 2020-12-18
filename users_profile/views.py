@@ -17,7 +17,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 @user_router.post("/token", response_model=Token)
 def login_for_access_token(form_data:OAuth2PasswordRequestForm = Depends() ,db: Session = Depends(get_db)):
-    print(form_data)
+
     """Return jwt token,authorization for docs panel"""
     user = authenticate_user(db , form_data.username, form_data.password)
 
@@ -37,6 +37,7 @@ def login_for_access_token(form_data:OAuth2PasswordRequestForm = Depends() ,db: 
 
 @user_router.post("/login")
 def login_for_access_token(form_data:schemas.UserLogin ,db: Session = Depends(get_db)):
+
     """Return jwt token,authorization"""
     user = authenticate_user(db , form_data.email, form_data.password)
     user_login = user_by_login(db,form_data.email)
@@ -58,6 +59,7 @@ def login_for_access_token(form_data:schemas.UserLogin ,db: Session = Depends(ge
 
 @user_router.get("/users/me/", response_model=schemas.User)
 async def read_users_me(current_user: schemas.User = Depends(get_current_active_user)):
+
     """Return user in auth items"""
     return current_user
 
@@ -65,6 +67,7 @@ async def read_users_me(current_user: schemas.User = Depends(get_current_active_
 
 @user_router.get("/users")
 async def read_own_items(db: Session = Depends(get_db)):
+
     """return user all"""
     users = await crud.user_all(db)
     return {'users':users}
@@ -74,6 +77,7 @@ async def read_own_items(db: Session = Depends(get_db)):
 
 @user_router.post("/user", response_model=schemas.UserInfo)
 async def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+
     """Registration user"""
     db_user =   await crud.get_user_by_username(db, email=user.email)
     if db_user:
@@ -83,6 +87,7 @@ async def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
 @user_router.get("/user/{id}")
 async def user_in_db(id:int, db: Session = Depends(get_db)):
+
     """Return user == id in db """
     user = await crud.user_db(id,db)
     return user
@@ -92,6 +97,7 @@ async def user_in_db(id:int, db: Session = Depends(get_db)):
 
 @user_router.post('/send_email')
 async def email(email:schemas.EmailSchema, db: Session = Depends(get_db)):
+
     """Send email password(reset)"""
     send_message = crud.get_user_by_email(db,email)
     return send_message

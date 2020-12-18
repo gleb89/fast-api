@@ -35,7 +35,7 @@ async def  get_rating_by(id,db):
         rating_user += i.rating
     rating_items = len(list_rating)
     if rating_user != 0:
-        rating_user = rating_user/rating_items
+        rating_user = round(rating_user/rating_items)
     else:
-        rating_user = 0
+        rating_user = round(0)
     return {'rating':rating,'rating_user':rating_user}
