@@ -81,7 +81,7 @@ async def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     return  crud.create_user(db=db, user=user)
 
 
-@user_router.get("/user/{id}", response_model=schemas.UserInfo)
+@user_router.get("/user/{id}")
 async def user_in_db(id:int, db: Session = Depends(get_db)):
     """Return user == id in db """
     user = await crud.user_db(id,db)

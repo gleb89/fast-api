@@ -53,6 +53,7 @@ class UserInfo(User):
     city:str
     master:bool
     avatar:str
+    rating:int
 
     class Config:
         orm_mode = True

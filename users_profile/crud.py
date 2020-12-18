@@ -87,8 +87,19 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 
 async def user_db(id,db):
     user =  db.query(models.User).filter(models.User.id == id).first()
+    print(user.bb)
+    user_schema = {
+        "id": user.id,
+        "name": user.name,
+        "email": user.email,
+        "master": user.master,
+        "city": user.city,
+        "avatar": user.avatar,
+        "rating":user.bb
+    }
 
-    return user
+
+    return user_schema
 
 async def get_current_user(token: str = Depends(oauth2_scheme),\
                             db: Session = Depends(get_db)):
@@ -182,7 +193,6 @@ async def user_all(db):
     users =  db.query(models.User).filter(models.User.master == True).all()
     list_users = await rati(users)
     users_rating = [i.children for i in users]
-
     return list_users
 
 
