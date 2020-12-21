@@ -75,7 +75,7 @@ async def read_own_items(db: Session = Depends(get_db)):
 
 
 
-@user_router.post("/user", response_model=schemas.UserInfo)
+@user_router.post("/user")
 async def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
     """Registration user"""
