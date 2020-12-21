@@ -4,7 +4,8 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from config.db import get_db
 from . import crud, models, schemas
-from .crud import create_access_token,authenticate_user,get_current_active_user, image_add, user_by_login
+from .crud import create_access_token,authenticate_user,get_current_active_user,\
+                        image_add, user_by_login, add_category, reset_user_data,categories_db
 from datetime import timedelta
 from users_profile.schemas import Token
 
@@ -13,7 +14,21 @@ from users_profile.schemas import Token
 user_router = APIRouter()
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
+@user_router.post("/categories")
+async def create_category(categories: schemas.Category, db: Session = Depends(get_db)):
 
+    """Create Category """
+    category = await add_category(categories, db)
+
+    return category
+
+
+@user_router.get("/categories/")
+async def categories_in_db(db: Session = Depends(get_db)):
+
+    """Return categories all """
+    categories = await crud.categories_db(db)
+    return categories
 
 @user_router.post("/token", response_model=Token)
 def login_for_access_token(form_data:OAuth2PasswordRequestForm = Depends() ,db: Session = Depends(get_db)):
@@ -93,7 +108,11 @@ async def user_in_db(id:int, db: Session = Depends(get_db)):
     return user
 
 
-
+@user_router.put('/reset_user')
+async def reset_user(user_data:schemas.UserUpdate, db: Session = Depends(get_db)):
+    """User password update"""
+    user = await crud.reset_user_data(user_data,db)
+    return user
 
 @user_router.post('/send_email')
 async def email(email:schemas.EmailSchema, db: Session = Depends(get_db)):

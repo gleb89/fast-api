@@ -6,6 +6,9 @@ import uuid
 import pydantic
 
 
+class Category(BaseModel):
+    title:str
+
 
 class User(BaseModel):
     id: int
@@ -14,10 +17,16 @@ class User(BaseModel):
     master:bool
 
 
+class UserUpdate(User):
+    category:int
+    name: str
+    email: Optional[str] = None
+    city:str
 
 
 class UserInDB(User):
     name: str
+    category:int
 
 class UserInDfB(User):
     hashed_password: str

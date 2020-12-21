@@ -29,7 +29,28 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 async def get_user_by_username(db: Session, email: str):
     return db.query(models.User).filter(models.User.email == email).first()
 
+async def add_category(category,db):
+    category = models.Category(title=category.title)
+    db.add(category)
+    db.commit()
+    db.refresh(category)
+    return category
 
+
+async def categories_db(db):
+    categories = db.query(models.Category).all()
+    return categories
+
+async def reset_user_data(user_data, db):
+    category = db.query(models.Category).filter(models.Category.id == user_data.category)
+    user =  db.query(models.User).filter(models.User.id == user_data.id).update\
+                                    (dict(name=user_data.name,city = user_data.city,\
+                                email = user_data.email,category_id = user_data.category))
+
+    db.commit()
+    user = db.query(models.User).filter(models.User.id == user_data.id).first()
+
+    return user
 
 
 def create_user(db: Session, user: schemas.UserCreate):
@@ -95,7 +116,8 @@ async def user_db(id,db):
         "master": user.master,
         "city": user.city,
         "avatar": user.avatar,
-        "rating":user.bb
+        "rating":user.bb,
+        "category":user.category
     }
 
 
@@ -182,7 +204,8 @@ async def rati(users):
         "is_active": user.is_active,
         "city": user.city,
         "children": user.children,
-        "rating":user.bb
+        "rating":user.bb,
+        "category":user.category
         }
         list_user.append(user_schema)
     return list_user

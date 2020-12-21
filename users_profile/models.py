@@ -17,9 +17,10 @@ class User(Base):
     avatar = Column( String(100))
     is_active = Column(Boolean, default=True)
     master = Column(Boolean, default=False)
+    category_id = Column(Integer, ForeignKey('category.id'))
+
+    category = relationship("Category",foreign_keys=[category_id])
     children = relationship("Rating",secondary=rating_table)
-
-
 
     @property
     def bb(self):
@@ -33,5 +34,16 @@ class User(Base):
             return round(rating/count_rating)
         else:
             return round(rating)
+
+
+
+class Category(Base):
+    __tablename__ = "category"
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String)
+
+
+
+
 
 users = User.__table__
