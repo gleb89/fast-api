@@ -131,7 +131,8 @@ async def reset_password(form_password:schemas.EmailRessetPassword,db: Session =
 
 
 @user_router.put('/add-image/{user_id}')
-async def image_add_user(user_id:int,image: UploadFile = File(...),db: Session = Depends(get_db)):
+async def image_add_user(user_id:int,image:UploadFile = File(...),db: Session = Depends(get_db)):
+
     """User image avatar add"""
-    avatar = await image_add(image,user_id,db)
-    return avatar
+    new_image = await image_add(image, user_id,db)
+    return new_image
