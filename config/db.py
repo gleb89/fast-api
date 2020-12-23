@@ -1,14 +1,27 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+import os
+import environ
 
 
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
+# reading .env file
+environ.Env.read_env('.env')
 
-SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
-ALGORITHM = "HS256"
-SQLALCHEMY_DATABASE_URL = "postgres://cczlittcvwxubo:2b0857467f254162be97df83fffba2c9802a177450c0b2928ba1dcf6d7d22891@ec2-54-247-118-139.eu-west-1.compute.amazonaws.com:5432/df42acu48q6lbm"
+# False if not in os.environ
+DEBUG = env('DEBUG')
+
+SECRET_KEY = env('SECRET_KEY')
+
+ALGORITHM = env('ALGORITHM')
+SQLALCHEMY_DATABASE_URL = env('SQLALCHEMY_DATABASE_URL')
 # SQLALCHEMY_DATABASE_URL = "postgresql://postgres:241281@localhost/test"
 
+PASSWORD_EMAIL = env('PASSWORD_EMAIL')
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL

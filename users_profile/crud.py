@@ -11,7 +11,7 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from .schemas import UserAuthenticate,TokenData
 from typing import Optional
-from config.db import get_db
+from config.db import get_db, PASSWORD_EMAIL
 import smtplib
 import shutil
 from .schemas import UsId
@@ -166,7 +166,7 @@ def get_user_by_email(db, email: schemas.EmailSchema):
                 http://127.0.0.1:8000/reset_password'.encode('utf-8')
         server = smtplib.SMTP('smtp.mail.ru',587)
         server.starttls()
-        server.login('beautyroom37@mail.ru', 'Kit241281')
+        server.login('beautyroom37@mail.ru',PASSWORD_EMAIL )
         server.sendmail('beautyroom37@mail.ru',email.email,message)
         server.close()
         print('kk')
