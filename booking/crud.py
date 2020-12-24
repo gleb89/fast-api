@@ -3,11 +3,8 @@ from fastapi import HTTPException
 from fastapi.responses import JSONResponse
 
 
-async def create_booking(booking, user, db):
-    try:
-        user = user.id
-    except :
-        user = user
+async def create_booking(booking, db):
+    user = booking.user_id
     new_booking = Booking(date=booking.date, user_id=user)
     db.add(new_booking)
     db.commit()
@@ -31,7 +28,7 @@ async def create_booking_costum(time_data, db):
         time = await new_time_booking_costum(time_data, date.id, db)
         return time
     else:
-        date = await create_booking(time_data, time_data.user_id, db)
+        date = await create_booking(time_data, db)
         time = await new_time_booking_costum(time_data, date.id, db)
         try:
             return JSONResponse(status_code=200, content={'message': "Time create"})
@@ -39,13 +36,30 @@ async def create_booking_costum(time_data, db):
             raise HTTPException(status_code=400, detail="Not time")
 
 
+
+async def time(booking_time,data_id,db):
+        new_booking_time = TimeBooking(
+        time=booking_time.time, booking_id=data_id, is_booking=booking_time.is_booking, phone_owner = '')
+        db.add(new_booking_time)
+        db.commit()
+        db.refresh(new_booking_time)
+        return new_booking_time
+
+
+
 async def new_time_booking(booking_time, db):
-    new_booking_time = TimeBooking(
-        time=booking_time.time, booking_id=booking_time.booking_id, is_booking=booking_time.is_booking, phone_owner = '')
-    db.add(new_booking_time)
-    db.commit()
-    db.refresh(new_booking_time)
-    return new_booking_time
+    date = db.query(Booking).filter(Booking.user_id ==
+                                    booking_time.user_id, Booking.date == booking_time.date).first()
+    if date:
+        time_new = await time(booking_time, date.id, db)
+        return time_new
+    else:
+        data = await create_booking(booking_time,db)
+        time_new = await time(booking_time, data.id, db)
+        return time_new
+
+
+
 
 
 async def return_date_user(user_id, db):

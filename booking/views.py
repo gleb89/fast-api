@@ -17,16 +17,14 @@ booking_router = APIRouter()
 
 
 @booking_router.post('/booking-create_date')
-async def create_date(booking:BookingCreate, user:User = Depends(get_current_active_user),\
-                                                            db: Session = Depends(get_db)):
+async def create_date(booking:BookingCreate, db: Session = Depends(get_db)):
     """Create new date user booking"""
-    new_booking = await create_booking(booking, user, db)
+    new_booking = await create_booking(booking,db)
     return new_booking
 
 
 @booking_router.post('/booking-create_time')
-async def create_time(booking_time:BookingTimeCreate,\
-        user:User = Depends(get_current_active_user),\
+async def create_time(booking_time:BookingTimeCreate,
                         db:Session = Depends(get_db)):
     """Create new time user booking_date"""
     new_time = await new_time_booking(booking_time, db)
