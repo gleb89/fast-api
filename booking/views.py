@@ -24,7 +24,7 @@ async def create_date(booking:BookingCreate, db: Session = Depends(get_db)):
 
 
 @booking_router.post('/booking-create_time')
-async def create_time(booking_time:BookingTimeCreate,
+async def create_time_master(booking_time:BookingTimeCreate,
                         db:Session = Depends(get_db)):
     """Create new time user booking_date"""
     new_time = await new_time_booking(booking_time, db)

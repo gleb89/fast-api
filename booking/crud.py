@@ -52,19 +52,31 @@ async def new_time_booking(booking_time, db):
                                     booking_time.user_id, Booking.date == booking_time.date).first()
     if date:
         time_new = await time(booking_time, date.id, db)
+        time_add = date.time.append(time_new)
+        # db.add(time_add)
+        db.commit()
+        # db.refresh(time_add)
+        db.refresh(time_new)
         return time_new
     else:
         data = await create_booking(booking_time,db)
         time_new = await time(booking_time, data.id, db)
+        time_add = data.time.append(time_new)
+        # db.add(time_add)
+        db.commit()
+        # db.refresh(time_add)
+        db.refresh(time_new)
         return time_new
 
 
-
+# user.children.append(new_rating)
 
 
 async def return_date_user(user_id, db):
     date_all = db.query(Booking).filter(Booking.user_id == user_id).all()
     if date_all:
+        for i in date_all:
+            print(i.time)
         return date_all
     else:
         raise HTTPException(status_code=400, detail="Not date")

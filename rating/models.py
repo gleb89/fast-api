@@ -6,7 +6,9 @@ from .schemas import UserRating
 
 rating_table = Table('association', Base.metadata,
     Column('users', Integer, ForeignKey('users.id')),
-    Column('rating', Integer, ForeignKey('rating.id'))
+    Column('rating', Integer, ForeignKey('rating.id')
+    ),
+    extend_existing=True
 
 )
 
