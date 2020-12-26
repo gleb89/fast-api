@@ -99,7 +99,7 @@ async def return_time_date_all(date, user_id, db):
 
 async def return_time_date(date_id, db):
     time_all = db.query(TimeBooking).filter(
-        TimeBooking.booking_id == date_id, TimeBooking.is_booking == True).all()
+        TimeBooking.booking_id == date_id).all()
     if time_all:
         return time_all
     else:
