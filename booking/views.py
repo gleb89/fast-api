@@ -35,6 +35,7 @@ async def create_time_master(booking_time:BookingTimeCreate,
 async def data_all_master(user_id:int, db:Session = Depends(get_db)):
     """Return  date in user booking_date"""
     date = await return_date_user(user_id, db)
+    print('nn')
     return date
 
 
@@ -49,6 +50,7 @@ async def time_all_master(date_id:int, db: Session = Depends(get_db)):
 async def time_user_all(date:str, user:int, db:Session = Depends(get_db)):
     """Return  time in user booking_date"""
     time = await return_time_date_all(date, user, db)
+    print('jkj')
     return time
 
 

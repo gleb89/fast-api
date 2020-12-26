@@ -26,24 +26,27 @@ async def create_booking_costum(time_data, db):
                                     time_data.user_id, Booking.date == time_data.date).first()
     if date:
         time = await new_time_booking_costum(time_data, date.id, db)
+        time_add = date.time.append(time)
+        db.commit()
         return time
     else:
-        date = await create_booking(time_data, db)
-        time = await new_time_booking_costum(time_data, date.id, db)
-        try:
-            return JSONResponse(status_code=200, content={'message': "Time create"})
-        except:
-            raise HTTPException(status_code=400, detail="Not time")
+        data = await create_booking(time_data, db)
+        time = await new_time_booking_costum(time_data, data.id, db)
+
+        time_add = data.time.append(time)
+        db.commit()
+        return time
+
 
 
 
 async def time(booking_time,data_id,db):
-        new_booking_time = TimeBooking(
-        time=booking_time.time, booking_id=data_id, is_booking=booking_time.is_booking, phone_owner = '')
-        db.add(new_booking_time)
-        db.commit()
-        db.refresh(new_booking_time)
-        return new_booking_time
+    new_booking_time = TimeBooking(
+    time=booking_time.time, booking_id=data_id, is_booking=booking_time.is_booking, phone_owner = '')
+    db.add(new_booking_time)
+    db.commit()
+    db.refresh(new_booking_time)
+    return new_booking_time
 
 
 
