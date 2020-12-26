@@ -105,7 +105,7 @@ async def return_time_date(date_id, db):
     else:
         raise HTTPException(status_code=400, detail="Not time")
 
-
+#rett
 async def delete_time_date(time_id, db):
     time = db.query(TimeBooking).filter(TimeBooking.id == time_id).first()
     db.delete(time)
