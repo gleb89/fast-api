@@ -28,7 +28,7 @@ class TimeBooking(Base):
     __tablename__ = "booking_time"
     id = Column(Integer, primary_key=True, index=True)
     time = Column(Time)
-    is_booking = Column(Boolean, default=True)
+    is_booking = Column(Boolean, default=False)
     master_confirm = Column(Boolean, default=False)
     phone_owner = Column(String)
     date = relationship("Booking",secondary=date_table)

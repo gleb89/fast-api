@@ -14,7 +14,7 @@ async def create_booking(booking, db):
 
 async def new_time_booking_costum(data, booking_id, db):
     new_booking_time = TimeBooking(
-        time=data.time, owner_id=data.owner_id, booking_id=booking_id, is_booking=False, phone_owner = data.phone_owner)
+        time=data.time, owner_id=data.owner_id, booking_id=booking_id, is_booking=True, phone_owner = data.phone_owner)
     db.add(new_booking_time)
     db.commit()
     db.refresh(new_booking_time)
@@ -28,6 +28,7 @@ async def create_booking_costum(time_data, db):
         time = await new_time_booking_costum(time_data, date.id, db)
         time_add = date.time.append(time)
         db.commit()
+        db.refresh(time)
         return time
     else:
         data = await create_booking(time_data, db)
@@ -35,6 +36,7 @@ async def create_booking_costum(time_data, db):
 
         time_add = data.time.append(time)
         db.commit()
+        db.refresh(time)
         return time
 
 
@@ -118,6 +120,6 @@ async def delete_time_date(time_id, db):
 
 async def check_time_owner(time, db):
     db.query(TimeBooking).filter(TimeBooking.id == time.id).update(
-        dict(is_booking=False, owner_id=time.owner_id,phone_owner = time.phone_owner))
+        dict(is_booking=True, owner_id=time.owner_id,phone_owner = time.phone_owner))
     db.commit()
     return JSONResponse(status_code=200, content={'message': "Time update user bool"})
