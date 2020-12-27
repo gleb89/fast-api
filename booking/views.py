@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from config.db import get_db
-from .schemas import BookingBase, BookingCreate, BookingTimeCreate,\
+from .schemas import BookingBase, BookingCreate, BookingTimeCreate,TimeConf,\
                                          TimeUpdateBool, BookingTimeCheck,\
                                                         BookingTimeCostum
 from .crud import create_booking, new_time_booking, return_date_user,\
-    return_time_date, delete_time_date,\
+    return_time_date, delete_time_date,master_confirm_time,\
     return_time_date_all, check_time_owner,\
     create_booking_costum
 from .models import Booking, TimeBooking
@@ -62,7 +62,7 @@ async def time_delete_master(time_id:int, db:Session = Depends(get_db)):
 
 
 @booking_router.put('/check-time/')
-async def time_delete(time:BookingTimeCheck, db:Session = Depends(get_db)):
+async def time_chech(time:BookingTimeCheck, db:Session = Depends(get_db)):
     """Zapis check time user auth in master"""
     check_time = await check_time_owner(time, db)
     return check_time
@@ -72,4 +72,10 @@ async def time_delete(time:BookingTimeCheck, db:Session = Depends(get_db)):
 async def time_data_create(time_data:BookingTimeCostum, db:Session = Depends(get_db)):
     """create costum time user auth"""
     time = await create_booking_costum(time_data, db)
+    return time
+
+@booking_router.put('/confirm-time/')
+async def confirm_master_time(time_data:TimeConf, db:Session = Depends(get_db)):
+    """coinfirm master time"""
+    time = await master_confirm_time(time_data, db)
     return time

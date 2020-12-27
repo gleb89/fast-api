@@ -19,6 +19,11 @@ class TimeUpdateBool(BaseModel):
     is_booking: bool
 
 
+class TimeConf(BaseModel):
+    id: int
+    master_confirm: bool
+
+
 class BookingTimeBase(BaseModel):
     id: int
     booking_id: int

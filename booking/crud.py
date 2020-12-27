@@ -123,3 +123,12 @@ async def check_time_owner(time, db):
         dict(is_booking=True, owner_id=time.owner_id,phone_owner = time.phone_owner))
     db.commit()
     return JSONResponse(status_code=200, content={'message': "Time update user bool"})
+
+
+
+async def master_confirm_time(time_data,db):
+    time = db.query(TimeBooking).filter(TimeBooking.id == time_data.id).update\
+                                (dict(master_confirm = time_data.master_confirm,\
+                                                            is_booking = False))
+    db.commit()
+    return time
