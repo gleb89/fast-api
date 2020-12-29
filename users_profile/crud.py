@@ -39,7 +39,7 @@ async def add_category(category,db):
 
 async def categories_db(db):
     categories = db.query(models.Category).all()
-    return categories
+    return {categories}
 
 async def reset_user_data(user_data, db):
     category = db.query(models.Category).filter(models.Category.id == user_data.category)
@@ -55,7 +55,14 @@ async def reset_user_data(user_data, db):
 
 def create_user(db: Session, user: schemas.UserCreate):
     hashed_password = pwd_context.hash(user.password.encode('utf-8'))
-    db_user = models.User(name=user.name,password=hashed_password,email = user.email,city = user.city,master = user.master,avatar = '')
+
+    if user.category_id != 0:
+        category = db.query(models.Category).filter(models.Category.id == user.category_id)
+        db_user = models.User(name=user.name,password=hashed_password,email = user.email,city = user.city,master = user.master,avatar = '',category_id = user.category_id)
+    else:
+
+        db_user = models.User(name=user.name,password=hashed_password,email = user.email,city = user.city,master = user.master,avatar = '')
+
     db.add(db_user)
     db.commit()
     db.refresh(db_user)

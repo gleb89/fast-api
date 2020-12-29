@@ -42,6 +42,7 @@ class UserCreate(BaseModel):
     email: Optional[str] = None
     city:str
     master:bool
+    category_id:int
 
 class UsId(User):
     id:int
