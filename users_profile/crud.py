@@ -39,7 +39,7 @@ async def add_category(category,db):
 
 async def categories_db(db):
     categories = db.query(models.Category).all()
-    return {categories}
+    return categories
 
 async def reset_user_data(user_data, db):
     category = db.query(models.Category).filter(models.Category.id == user_data.category)
