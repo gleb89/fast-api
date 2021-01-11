@@ -3,7 +3,13 @@ from config.db import Base
 from sqlalchemy.orm import relationship
 from rating.models import rating_table
 
+images_table = Table('images_user', Base.metadata,
+    Column('users', Integer, ForeignKey('users.id')),
+    Column('images', Integer, ForeignKey('images.id')
+    ),
+    extend_existing=True
 
+)
 
 class User(Base):
     __tablename__ = "users"
@@ -36,13 +42,7 @@ class User(Base):
         else:
             return round(rating)
 
-images_table = Table('images_user', Base.metadata,
-    Column('users', Integer, ForeignKey('users.id')),
-    Column('images', Integer, ForeignKey('images.id')
-    ),
-    extend_existing=True
 
-)
 
 class Images(Base):
     __tablename__ = "images"

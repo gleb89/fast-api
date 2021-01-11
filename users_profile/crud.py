@@ -124,7 +124,8 @@ async def user_db(id,db):
         "city": user.city,
         "avatar": user.avatar,
         "rating":user.bb,
-        "category":user.category
+        "category":user.category,
+        "images":user.images
     }
 
 
@@ -212,7 +213,8 @@ async def rati(users):
         "city": user.city,
         "children": user.children,
         "rating":user.bb,
-        "category":user.category
+        "category":user.category,
+        'images':user.images
         }
         list_user.append(user_schema)
     return list_user
@@ -223,6 +225,7 @@ async def user_all(db):
     users =  db.query(models.User).filter(models.User.master == True).all()
     list_users = await rati(users)
     users_rating = [i.children for i in users]
+    users_images = [i.images for i in users]
     return list_users
 
 
@@ -238,3 +241,16 @@ async def image_add(image,user_id,db):
                                                     (dict(avatar=avatar))
         db.commit()
     return avatar
+
+
+async def images_add_album(image,user_id,db):
+    user =  db.query(models.User).filter(models.User.id == user_id).first()
+    with open(f"static/images/{image.filename}", "wb") as buffer:
+        shutil.copyfileobj(image.file, buffer)
+        images = f'https://glebhleb.herokuapp.com/static/images/{image.filename}'
+        new_images = models.Images(user_id=user_id,images = images)
+        user.images.append(new_images)
+        db.add(new_images)
+        db.commit()
+        db.refresh(new_images)
+    return images

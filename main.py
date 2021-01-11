@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Response
+from fastapi import FastAPI, Request, Response, BackgroundTasks
 from config.base import Base
 from config.db import engine
 from config.db import SessionLocal
@@ -13,6 +13,23 @@ from fastapi.staticfiles import StaticFiles
 
 
 app = FastAPI()
+
+def write_notification(email: str, message=""):
+    import time
+    x = 0
+    while x <30:
+        x += 1
+        print(x)
+        time.sleep(1)
+
+
+
+@app.post("/send-notification/{email}")
+async def send_notification(email: str, background_tasks: BackgroundTasks):
+    background_tasks.add_task(write_notification, email, message="some notification")
+    return {"message": "Notification sent in the background"}
+
+
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 origins = [

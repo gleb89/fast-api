@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from config.db import get_db
 from . import crud, models, schemas
 from .crud import create_access_token,authenticate_user,get_current_active_user,\
-                        image_add, user_by_login, add_category, reset_user_data,categories_db
+                        image_add, user_by_login, add_category, reset_user_data,categories_db, images_add_album
 from datetime import timedelta
 from users_profile.schemas import Token
 
@@ -135,4 +135,14 @@ async def image_add_user(user_id:int,image:UploadFile = File(...),db: Session = 
 
     """User image avatar add"""
     new_image = await image_add(image, user_id,db)
+    return new_image
+
+
+
+
+@user_router.post('/add-images/{user_id}')
+async def images_add(user_id:int,image:UploadFile = File(...),db: Session = Depends(get_db)):
+
+    """User image album add"""
+    new_image = await images_add_album(image, user_id,db)
     return new_image
