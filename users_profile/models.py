@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Table
 from config.db import Base
 from sqlalchemy.orm import relationship
 from rating.models import rating_table
@@ -21,6 +21,7 @@ class User(Base):
 
     category = relationship("Category",foreign_keys=[category_id])
     children = relationship("Rating",secondary=rating_table)
+    images = relationship("Images",secondary=images_table)
 
     @property
     def bb(self):
@@ -35,6 +36,21 @@ class User(Base):
         else:
             return round(rating)
 
+images_table = Table('images_user', Base.metadata,
+    Column('users', Integer, ForeignKey('users.id')),
+    Column('images', Integer, ForeignKey('images.id')
+    ),
+    extend_existing=True
+
+)
+
+class Images(Base):
+    __tablename__ = "images"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    images = Column( String(100))
+
+    user = relationship("User",foreign_keys=[user_id])
 
 
 class Category(Base):

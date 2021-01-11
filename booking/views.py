@@ -43,6 +43,7 @@ async def data_all_master(user_id:int, db:Session = Depends(get_db)):
 async def time_all_master(date_id:int, db: Session = Depends(get_db)):
     """Return  date in user booking_date"""
     time = await return_time_date(date_id, db)
+    print('kk')
     return time
 
 
