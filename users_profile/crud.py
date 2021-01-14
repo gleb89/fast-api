@@ -15,6 +15,8 @@ from config.db import get_db
 import smtplib
 import shutil
 from .schemas import UsId
+import os
+
 
 
 
@@ -249,8 +251,27 @@ async def images_add_album(image,user_id,db):
         shutil.copyfileobj(image.file, buffer)
         images = f'https://glebhleb.herokuapp.com/static/images/{image.filename}'
         new_images = models.Images(user_id=user_id,images = images)
-        user.images.append(new_images)
         db.add(new_images)
         db.commit()
         db.refresh(new_images)
+        user.images.append(new_images)
+        db.commit()
     return images
+
+
+async def images_delete(image_id,user_id,db):
+    user = db.query(models.User).get(user_id)
+    
+    image = db.query(models.Images).filter(models.Images.id == image_id).first()
+    user.images.remove(image )
+    image_name = image.images[45:]
+    db.commit()
+    os.remove(f"./static/images/{image_name}")
+    
+
+    return JSONResponse(status_code=200, content={'message': "image delete"})
+
+
+
+
+
