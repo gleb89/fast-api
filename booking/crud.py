@@ -1,6 +1,7 @@
 from .models import Booking, TimeBooking
 from fastapi import HTTPException
 from fastapi.responses import JSONResponse
+from users_profile.models import User
 
 
 async def create_booking(booking, db):
@@ -85,6 +86,37 @@ async def return_date_user(user_id, db):
         return date_all
     else:
         raise HTTPException(status_code=400, detail="Not date")
+
+
+async def user_date_time(date_id,db):
+        date = db.query(Booking).filter(Booking.id ==
+                                    date_id).first()
+        user = db.query(User).filter(
+            User.id == date.user_id).first()
+        return {'user_name':user.name,'date':date.date,'user_category':user.category}
+
+
+async def return_time_owner(owner_id, db):
+    list_time = []
+    time_all = db.query(TimeBooking).filter(
+            TimeBooking.owner_id == owner_id).all()
+    if time_all:
+        for i in time_all:
+            date_user = await user_date_time(i.booking_id,db)
+            list_dict_time = {
+                "name_master": date_user['user_name'],
+                "phone_master": "12",
+                "time": i.time,
+                "date":  date_user['date'],
+                "master_confirm": i.master_confirm,
+                'user_category':date_user['user_category']
+            }
+            list_time.append(list_dict_time)
+        return list_time
+
+    else:
+        return None
+
 
 
 async def return_time_date_all(date, user_id, db):

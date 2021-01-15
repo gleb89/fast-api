@@ -7,7 +7,7 @@ from .schemas import BookingBase, BookingCreate, BookingTimeCreate,TimeConf,\
 from .crud import create_booking, new_time_booking, return_date_user,\
     return_time_date, delete_time_date,master_confirm_time,\
     return_time_date_all, check_time_owner,\
-    create_booking_costum
+    create_booking_costum, return_time_owner
 from .models import Booking, TimeBooking
 from users_profile.crud import get_current_active_user
 from users_profile.schemas import User
@@ -35,7 +35,13 @@ async def create_time_master(booking_time:BookingTimeCreate,
 async def data_all_master(user_id:int, db:Session = Depends(get_db)):
     """Return  date in user booking_date"""
     date = await return_date_user(user_id, db)
-    print('nn')
+    return date
+
+
+@booking_router.get('/booking-data-user/{user_id}')
+async def data_time_owner(user_id:int, db:Session = Depends(get_db)):
+    """Return  date in user booking_date user_owner"""
+    date = await return_time_owner(user_id, db)
     return date
 
 
