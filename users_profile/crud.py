@@ -256,7 +256,8 @@ async def images_add_album(image,user_id,db):
         db.refresh(new_images)
         user.images.append(new_images)
         db.commit()
-    return images
+        db.refresh(new_images)
+    return new_images
 
 
 async def images_delete(image_id,user_id,db):
