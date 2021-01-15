@@ -144,6 +144,7 @@ async def return_time_date(date_id, db):
     list_time = []
     time_all = db.query(TimeBooking).filter(
         TimeBooking.booking_id == date_id).all()
+    
     if time_all:
         for i in time_all:
             owner_id = await owner_name(i.owner_id, db)
@@ -155,12 +156,13 @@ async def return_time_date(date_id, db):
             "phone_owner": i.phone_owner,
             "is_booking": i.is_booking,
             "id": i.id
-        },
+            }
+            
             list_time.append(data_time)
         return list_time
-    
     else:
         raise HTTPException(status_code=400, detail="Not time")
+    return list_time
 
 #rett
 async def delete_time_date(time_id, db):
