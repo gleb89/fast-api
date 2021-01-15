@@ -134,11 +134,31 @@ async def return_time_date_all(date, user_id, db):
         return None
 
 
+async def owner_name(owner_id, db):
+    user = db.query(User).filter(
+        User.id == owner_id).first()
+    print(user.name)
+    return {'user_name':user.name}
+
 async def return_time_date(date_id, db):
+    list_time = []
     time_all = db.query(TimeBooking).filter(
         TimeBooking.booking_id == date_id).all()
     if time_all:
-        return time_all
+        for i in time_all:
+            owner_id = await owner_name(i.owner_id, db)
+            data_time = {
+            "owner_id": owner_id['user_name'],
+            "booking_id": i.booking_id,
+            "master_confirm": i.master_confirm,
+            "time": i.time,
+            "phone_owner": i.phone_owner,
+            "is_booking": i.is_booking,
+            "id": i.id
+        },
+            list_time.append(data_time)
+        return list_time
+    
     else:
         raise HTTPException(status_code=400, detail="Not time")
 
