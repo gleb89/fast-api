@@ -93,7 +93,7 @@ async def user_date_time(date_id,db):
                                     date_id).first()
         user = db.query(User).filter(
             User.id == date.user_id).first()
-        return {'user_name':user.name,'date':date.date,'user_category':user.category}
+        return {'user_name':user.name,'date':date.date,'user_category':user.category,'user_phone':user.phone}
 
 
 async def return_time_owner(owner_id, db):
@@ -105,7 +105,7 @@ async def return_time_owner(owner_id, db):
             date_user = await user_date_time(i.booking_id,db)
             list_dict_time = {
                 "name_master": date_user['user_name'],
-                "phone_master": "12",
+                "phone_master": date_user['user_phone'],
                 "time": i.time,
                 "date":  date_user['date'],
                 "master_confirm": i.master_confirm,
