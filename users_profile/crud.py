@@ -177,10 +177,10 @@ def get_user_by_email(db, email: schemas.EmailSchema):
     user =  db.query(models.User).filter(models.User.email == email.email).first()
     if user:
         message = 'для востановления пароля перейдите по ссылке\
-                http://127.0.0.1:8000/reset_password'.encode('utf-8')
+                https://new-nuxtjs.herokuapp.com/ressetpassword'.encode('utf-8')
         server = smtplib.SMTP('smtp.mail.ru',587)
         server.starttls()
-        server.login('beautyroom37@mail.ru','Polina072020' )
+        server.login('beautyroom37@mail.ru','Polina202007' )
         server.sendmail('beautyroom37@mail.ru',email.email,message)
         server.close()
         print('kk')
