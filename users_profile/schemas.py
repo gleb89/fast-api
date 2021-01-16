@@ -43,6 +43,7 @@ class UserCreate(BaseModel):
     city:str
     master:bool
     category_id:int
+    phone:str
 
 class UsId(User):
     id:int

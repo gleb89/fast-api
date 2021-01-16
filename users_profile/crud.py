@@ -47,7 +47,7 @@ async def reset_user_data(user_data, db):
     category = db.query(models.Category).filter(models.Category.id == user_data.category)
     user =  db.query(models.User).filter(models.User.id == user_data.id).update\
                                     (dict(name=user_data.name,city = user_data.city,\
-                                email = user_data.email,category_id = user_data.category))
+                                email = user_data.email,category_id = user_data.category, phone = user_data.phone))
 
     db.commit()
     user = db.query(models.User).filter(models.User.id == user_data.id).first()
@@ -60,7 +60,10 @@ def create_user(db: Session, user: schemas.UserCreate):
 
     if user.category_id != 0:
         category = db.query(models.Category).filter(models.Category.id == user.category_id)
-        db_user = models.User(name=user.name,password=hashed_password,email = user.email,city = user.city,master = user.master,avatar = '',category_id = user.category_id)
+        db_user = models.User(name=user.name,password=hashed_password,email = user.email,\
+                                                city = user.city,master = user.master,\
+                                                avatar = '',category_id = user.category_id,\
+                                                phone = user.phone)
     else:
 
         db_user = models.User(name=user.name,password=hashed_password,email = user.email,city = user.city,master = user.master,avatar = '')
@@ -127,7 +130,8 @@ async def user_db(id,db):
         "avatar": user.avatar,
         "rating":user.bb,
         "category":user.category,
-        "images":user.images
+        "images":user.images,
+        "phone":user.phone
     }
 
 
@@ -216,10 +220,13 @@ async def rati(users):
         "children": user.children,
         "rating":user.bb,
         "category":user.category,
-        'images':user.images
+        'images':user.images,
+        'phone':user.phone
         }
         list_user.append(user_schema)
     return list_user
+
+
 from rating.models import Rating
 from sqlalchemy import func
 
@@ -244,7 +251,7 @@ async def image_add(image,user_id,db):
         db.commit()
     return avatar
 
-
+create_user
 async def images_add_album(image,user_id,db):
     user =  db.query(models.User).filter(models.User.id == user_id).first()
     with open(f"static/images/{image.filename}", "wb") as buffer:

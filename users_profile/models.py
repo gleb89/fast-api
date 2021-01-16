@@ -21,6 +21,7 @@ class User(Base):
     password = Column(String)
     city = Column(String)
     avatar = Column( String(100))
+    phone = Column(String(100))
     is_active = Column(Boolean, default=True)
     master = Column(Boolean, default=False)
     category_id = Column(Integer, ForeignKey('category.id'))
