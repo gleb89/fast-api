@@ -97,7 +97,7 @@ async def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     """Registration user"""
     db_user =   await crud.get_user_by_username(db, email=user.email)
     if db_user:
-        raise HTTPException(status_code=400, detail="Username already registered")
+        raise HTTPException(status_code=400, detail="Такой email существует")
     return  crud.create_user(db=db, user=user)
 
 
