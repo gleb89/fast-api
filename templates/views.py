@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Response, APIRouter,Request
 from fastapi.templating import Jinja2Templates
+from fastapi.responses import RedirectResponse
 
 
 templates_router = APIRouter()
@@ -8,7 +9,7 @@ templates = Jinja2Templates(directory="templates")
 
 @templates_router.get('/')
 def home(request: Request):
-    return templates.TemplateResponse("home.html", {"request": request,})
+    return RedirectResponse("/docs")
 
 
 
