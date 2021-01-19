@@ -14,6 +14,23 @@ from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
 
+origins = [
+    "http://localhost.tiangolo.com",
+    "https://localhost.tiangolo.com",
+    "http://localhost",
+    "http://localhost:3000",
+    "https://zapic.online/",
+    "http://zapic.online/"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 def write_notification(email: str, message=""):
     import time
     x = 0
@@ -32,14 +49,8 @@ async def send_notification(email: str, background_tasks: BackgroundTasks):
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-origins = [
-    "http://localhost.tiangolo.com",
-    "https://localhost.tiangolo.com",
-    "http://localhost",
-    "http://localhost:3000",
-    "https://zapic.online/",
-    "http://zapic.online/"
-]
+
+
 
 
 
@@ -54,13 +65,9 @@ async def db_session_middleware(request: Request, call_next):
     return response
 
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+
+
+
 
 
 #apps routers include
