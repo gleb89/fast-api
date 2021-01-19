@@ -37,7 +37,7 @@ origins = [
     "https://localhost.tiangolo.com",
     "http://localhost",
     "http://localhost:3000",
-    "https://new-nuxtjs.herokuapp.com"
+    "https://zapic.online/"
 ]
 
 

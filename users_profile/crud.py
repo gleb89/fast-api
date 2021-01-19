@@ -245,7 +245,7 @@ async def user_all(db):
 async def image_add(image,user_id,db):
     with open(f"static/images/{image.filename}", "wb") as buffer:
         shutil.copyfileobj(image.file, buffer)
-        avatar = f'https://api-booking.ru//static/images/{image.filename}'
+        avatar = f'https://api-booking.ru/static/images/{image.filename}'
         user =  db.query(models.User).filter(models.User.id == user_id).update\
                                                     (dict(avatar=avatar))
         db.commit()
@@ -256,7 +256,7 @@ async def images_add_album(image,user_id,db):
     user =  db.query(models.User).filter(models.User.id == user_id).first()
     with open(f"static/images/{image.filename}", "wb") as buffer:
         shutil.copyfileobj(image.file, buffer)
-        images = f'https://api-booking.ru//static/images/{image.filename}'
+        images = f'https://api-booking.ru/static/images/{image.filename}'
         new_images = models.Images(user_id=user_id,images = images)
         db.add(new_images)
         db.commit()
