@@ -15,8 +15,8 @@ from fastapi.staticfiles import StaticFiles
 app = FastAPI()
 
 origins = [
-    "https://zapic.online/",
-    "http://zapic.online/"
+    "https://zapic.online",
+    "http://zapic.online"
 ]
 
 app.add_middleware(
