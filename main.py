@@ -15,8 +15,13 @@ from fastapi.staticfiles import StaticFiles
 app = FastAPI()
 
 origins = [
-    "https://zapic.online",
-    "http://zapic.online"
+    "http://localhost.tiangolo.com",
+    "https://localhost.tiangolo.com",
+    "http://localhost",
+    "http://localhost:3000",
+    "https://new-nuxtjs.herokuapp.com/",
+    "https://zapic.online/",
+    "http://zapic.online/"
 ]
 
 app.add_middleware(
