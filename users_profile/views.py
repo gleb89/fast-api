@@ -109,7 +109,7 @@ async def user_in_db(id:int, db: Session = Depends(get_db)):
     return user
 
 
-@user_router.put('/reset_user')
+@user_router.post('/reset_user')
 async def reset_user(user_data:schemas.UserUpdate, db: Session = Depends(get_db)):
     """User password update"""
     user = await crud.reset_user_data(user_data,db)
@@ -124,14 +124,14 @@ async def email(email:schemas.EmailSchema, db: Session = Depends(get_db)):
 
 
 
-@user_router.put('/reset_password')
+@user_router.post('/reset_password')
 async def reset_password(form_password:schemas.EmailRessetPassword,db: Session = Depends(get_db)):
     """User password update"""
     new_password = crud.reset_user_password(form_password,db)
     return new_password
 
 
-@user_router.put('/add-image/{user_id}')
+@user_router.post('/add-image/{user_id}')
 async def image_add_user(user_id:int,image:UploadFile = File(...),db: Session = Depends(get_db)):
 
     """User image avatar add"""
@@ -149,7 +149,7 @@ async def images_add(user_id:int,image:UploadFile = File(...),db: Session = Depe
     return new_image
 
 
-@user_router.delete('/del-images/{image_id}')
+@user_router.post('/del-images/{image_id}')
 async def images_add(image_id:int,user_id:int, db: Session = Depends(get_db)):
 
     """User image album add"""

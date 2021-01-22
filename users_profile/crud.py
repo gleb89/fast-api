@@ -45,9 +45,14 @@ async def categories_db(db):
 
 async def reset_user_data(user_data, db):
     category = db.query(models.Category).filter(models.Category.id == user_data.category)
+    if 'phone' in user_data:
+        phone = user_data.phone
+    else:
+        phone = None
+
     user =  db.query(models.User).filter(models.User.id == user_data.id).update\
                                     (dict(name=user_data.name,city = user_data.city,\
-                                email = user_data.email,category_id = user_data.category, phone = user_data.phone))
+                                email = user_data.email,category_id = user_data.category, phone = phone))
 
     db.commit()
     user = db.query(models.User).filter(models.User.id == user_data.id).first()
@@ -240,7 +245,7 @@ async def user_all(db):
 
 
 
-
+reset_user_data
 
 async def image_add(image,user_id,db):
     with open(f"static/images/{image.filename}", "wb") as buffer:
@@ -274,7 +279,7 @@ async def images_delete(image_id,user_id,db):
     user.images.remove(image )
     image_name = image.images[45:]
     db.commit()
-    os.remove(f"./static/images/{image_name}")
+    # os.remove(f"./static/images/{image_name}")
 
 
     return JSONResponse(status_code=200, content={'message': "image delete"})
