@@ -185,7 +185,7 @@ def get_user_by_email(db, email: schemas.EmailSchema):
                 https://new-nuxtjs.herokuapp.com/ressetpassword'.encode('utf-8')
         server = smtplib.SMTP('smtp.mail.ru',587)
         server.starttls()
-        server.login('beautyroom37@mail.ru','Polina202007' )
+        server.login('beautyroom37@mail.ru','Polina2904' )
         server.sendmail('beautyroom37@mail.ru',email.email,message)
         server.close()
         print('kk')

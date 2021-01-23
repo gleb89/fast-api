@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, BackgroundTasks
 from sqlalchemy.orm import Session
 from config.db import get_db
 from .schemas import BookingBase, BookingCreate, BookingTimeCreate,TimeConf,\
@@ -68,16 +68,20 @@ async def time_delete_master(time_id:int, db:Session = Depends(get_db)):
 
 
 @booking_router.post('/check-time/')
-async def time_chech(time:BookingTimeCheck, db:Session = Depends(get_db)):
+async def time_chech(time:BookingTimeCheck,\
+        background_tasks: BackgroundTasks,\
+            db:Session = Depends(get_db)):
     """Zapis check time user auth in master"""
-    check_time = await check_time_owner(time, db)
+    check_time = await check_time_owner(time, db,background_tasks)
     return check_time
 
 
 @booking_router.post('/zapis-time/')
-async def time_data_create(time_data:BookingTimeCostum, db:Session = Depends(get_db)):
+async def time_data_create(time_data:BookingTimeCostum,\
+                    background_tasks: BackgroundTasks, \
+                            db:Session = Depends(get_db)):
     """create costum time user auth"""
-    time = await create_booking_costum(time_data, db)
+    time = await create_booking_costum(time_data,background_tasks, db)
     return time
 
 @booking_router.post('/confirm-time/')

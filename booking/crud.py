@@ -1,7 +1,8 @@
 from .models import Booking, TimeBooking
-from fastapi import HTTPException
+from fastapi import HTTPException,  BackgroundTasks
 from fastapi.responses import JSONResponse
 from users_profile.models import User
+import smtplib
 
 
 async def create_booking(booking, db):
@@ -22,7 +23,25 @@ async def new_time_booking_costum(data, booking_id, db):
     return new_booking_time
 
 
-async def create_booking_costum(time_data, db):
+def send_mail_user(time,db):
+    time = db.query(TimeBooking).filter(TimeBooking.id == time.id).first()
+    date = db.query(Booking).filter(Booking.id ==
+                                        time.booking_id).first()
+    user = db.query(User).filter(User.id == date.user_id).first()
+    email = user.email
+    print(time.time)
+    print(date.date)
+    message = f'Здравстуйте,новая запись на время {time.time}\
+                                                дата :{date.date},\
+                     подробнее в личном кабинете'.encode('utf-8')
+    server = smtplib.SMTP('smtp.mail.ru',587)
+    server.starttls()
+    server.login('beautyroom37@mail.ru','Polina2904' )
+    server.sendmail('beautyroom37@mail.ru',email,message)
+    server.close()
+
+
+async def create_booking_costum(time_data,background_tasks, db):
     date = db.query(Booking).filter(Booking.user_id ==
                                     time_data.user_id, Booking.date == time_data.date).first()
     if date:
@@ -30,6 +49,7 @@ async def create_booking_costum(time_data, db):
         time_add = date.time.append(time)
         db.commit()
         db.refresh(time)
+        background_tasks.add_task(send_mail_user, time,db)
         return time
     else:
         data = await create_booking(time_data, db)
@@ -38,6 +58,7 @@ async def create_booking_costum(time_data, db):
         time_add = data.time.append(time)
         db.commit()
         db.refresh(time)
+        background_tasks.add_task(send_mail_user, time,db)
         return time
 
 
@@ -170,7 +191,10 @@ async def delete_time_date(time_id, db):
     return JSONResponse(status_code=200, content={'message': "Time delete"})
 
 
-async def check_time_owner(time, db):
+
+
+async def check_time_owner(time, db, background_tasks):
+    background_tasks.add_task(send_mail_user, time,db)
     db.query(TimeBooking).filter(TimeBooking.id == time.id).update(
         dict(is_booking=True, owner_id=time.owner_id,phone_owner = time.phone_owner))
     db.commit()
