@@ -182,7 +182,7 @@ def user_by_login(db,email):
 def get_user_by_email(db, email: schemas.EmailSchema):
     user =  db.query(models.User).filter(models.User.email == email.email).first()
     if user:
-        message = 'для востановления пароля перейдите по ссылке\n https://zapic.online//ressetpassword'.encode('utf-8')
+        message = 'для востановления пароля '.encode('utf-8')
         server = smtplib.SMTP('smtp.mail.ru',587)
         server.starttls()
         server.login(LOGIN_EMAIL,PASSWORD_EMAIL)
@@ -285,9 +285,10 @@ async def images_delete(image_id,user_id,db):
 
 
 
-async def user_delete(user_id,db):
+async def user_delete(user_id, master, db):
     user = db.query(models.User.id == user_id).update\
-                            (dict(master=False))
+                            (dict(master=master))
     db.commit()
+    user = db.query(models.User).filter(models.User.id == user_id).first()
 
-    return {'reset':'ok'}
+    return {'reset':user}
