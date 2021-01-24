@@ -2,6 +2,7 @@ from .models import Booking, TimeBooking
 from fastapi import HTTPException,  BackgroundTasks
 from fastapi.responses import JSONResponse
 from users_profile.models import User
+from config.email import LOGIN_EMAIL, PASSWORD_EMAIL
 import smtplib
 
 
@@ -36,8 +37,8 @@ def send_mail_user(time,db):
                      подробнее в личном кабинете'.encode('utf-8')
     server = smtplib.SMTP('smtp.mail.ru',587)
     server.starttls()
-    server.login('beautyroom37@mail.ru','Polina2904' )
-    server.sendmail('beautyroom37@mail.ru',email,message)
+    server.login(LOGIN_EMAIL,PASSWORD_EMAIL ) 
+    server.sendmail(LOGIN_EMAIL,email,message)
     server.close()
 
 
