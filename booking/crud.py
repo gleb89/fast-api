@@ -31,9 +31,7 @@ def send_mail_user(time,db):
     email = user.email
     print(time.time)
     print(date.date)
-    message = f'Здравстуйте,новая запись на время {time.time}\
-                                                дата :{date.date},\
-                     подробнее в личном кабинете'.encode('utf-8')
+    message = f'Здравстуйте, \n У вас новая запись \n время {time.time}\n дата :{date.date},\n подробнее в личном кабинете'.encode('utf-8')
     server = smtplib.SMTP('smtp.mail.ru',587)
     server.starttls()
     server.login('beautyroom37@mail.ru','Polina2904' )

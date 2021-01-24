@@ -181,8 +181,7 @@ def user_by_login(db,email):
 def get_user_by_email(db, email: schemas.EmailSchema):
     user =  db.query(models.User).filter(models.User.email == email.email).first()
     if user:
-        message = 'для востановления пароля перейдите по ссылке\
-                https://new-nuxtjs.herokuapp.com/ressetpassword'.encode('utf-8')
+        message = 'для востановления пароля перейдите по ссылке\n https://zapic.online//ressetpassword'.encode('utf-8')
         server = smtplib.SMTP('smtp.mail.ru',587)
         server.starttls()
         server.login('beautyroom37@mail.ru','Polina2904' )
