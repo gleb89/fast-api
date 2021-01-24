@@ -287,6 +287,6 @@ async def images_delete(image_id,user_id,db):
 
 async def user_delete(user_id,db):
     user = db.query(models.User).filter(models.User == user_id).first()
-    user.delete
+    db.delete(userd2)
     db.commit()
     return {'delete':'ok'}
