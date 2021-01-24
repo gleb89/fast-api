@@ -285,9 +285,9 @@ async def images_delete(image_id,user_id,db):
 
 
 
-async def user_delete(user_id, master, db):
-    user = db.query(models.User.id == user_id).update\
-                            (dict(master=master))
+def user_delete(user_id, master, db):
+    user = db.query(models.User).filter(models.User.id == user_id).update\
+                            (dict(master = master))
     db.commit()
     user = db.query(models.User).filter(models.User.id == user_id).first()
 

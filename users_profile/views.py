@@ -159,8 +159,8 @@ async def images_add(image_id:int,user_id:int, db: Session = Depends(get_db)):
 
 
 @user_router.post('/del-user/{user_id}')
-async def delete_user(user_id:int,master:bool, db: Session = Depends(get_db)):
+def delete_user(user_id:int,master:bool, db: Session = Depends(get_db)):
 
     """User del"""
-    user = await user_delete(user_id,master, db)
+    user = user_delete(user_id, master, db)
     return user
