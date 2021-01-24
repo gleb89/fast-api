@@ -275,7 +275,7 @@ async def images_delete(image_id,user_id,db):
     user = db.query(models.User).get(user_id)
 
     image = db.query(models.Images).filter(models.Images.id == image_id).first()
-    user.images.remove(image )
+    user.images.remove(image)
     image_name = image.images[45:]
     db.commit()
     # os.remove(f"./static/images/{image_name}")
@@ -286,7 +286,8 @@ async def images_delete(image_id,user_id,db):
 
 
 async def user_delete(user_id,db):
-    user = db.query(models.User).filter(models.User == user_id).first()
-    db.delete(user)
+    user = db.query(models.User.id == user_id).update\
+                            (dict(master=False))
     db.commit()
-    return {'delete':'ok'}
+
+    return {'reset':'ok'}

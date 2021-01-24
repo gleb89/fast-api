@@ -162,5 +162,5 @@ async def images_add(image_id:int,user_id:int, db: Session = Depends(get_db)):
 async def delete_user(user_id:int, db: Session = Depends(get_db)):
 
     """User del"""
-    del_image = await user_delete(user_id,  db)
-    return del_image
+    user = await user_delete(user_id, db)
+    return user
