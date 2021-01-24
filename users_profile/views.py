@@ -6,7 +6,8 @@ from config.db import get_db
 from . import crud, models, schemas
 from .crud import create_access_token,authenticate_user,get_current_active_user,\
                         image_add, user_by_login, add_category, reset_user_data,\
-                                    categories_db, images_add_album, images_delete
+                                    categories_db, images_add_album, images_delete,\
+                                    user_delete
 from datetime import timedelta
 from users_profile.schemas import Token
 
@@ -154,4 +155,12 @@ async def images_add(image_id:int,user_id:int, db: Session = Depends(get_db)):
 
     """User image album add"""
     del_image = await images_delete(image_id, user_id, db)
+    return del_image
+
+
+@user_router.post('/del-user/{user_id}')
+async def delete_user(user_id:int, db: Session = Depends(get_db)):
+
+    """User del"""
+    del_image = await user_delete(user_id,  db)
     return del_image

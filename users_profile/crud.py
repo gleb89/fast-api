@@ -185,10 +185,9 @@ def get_user_by_email(db, email: schemas.EmailSchema):
         message = 'для востановления пароля перейдите по ссылке\n https://zapic.online//ressetpassword'.encode('utf-8')
         server = smtplib.SMTP('smtp.mail.ru',587)
         server.starttls()
-        server.login(LOGIN_EMAIL,PASSWORD_EMAIL )
-        server.sendmail(LOGIN_EMAIL,email.email,message)
+        server.login(LOGIN_EMAIL,PASSWORD_EMAIL)
+        server.sendmail(LOGIN_EMAIL, email.email, message)
         server.close()
-        print('kk')
         return {'message':f'password sent email {email.email}'}
     else:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,\
@@ -283,3 +282,11 @@ async def images_delete(image_id,user_id,db):
 
 
     return JSONResponse(status_code=200, content={'message': "image delete"})
+
+
+
+async def user_delete(user_id,db):
+    user = db.query(models.User).get(user_id)
+    user.delete
+    db.commit()
+    return {'delete':'ok'}
