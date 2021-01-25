@@ -206,7 +206,7 @@ def get_user_by_email(db, email: schemas.EmailSchema):
 
 
 def reset_user_password(form_pasword,db):
-    hashed_password = pwd_context.hash(form_pasword.password .encode('utf-8'))
+    hashed_password = pwd_context.hash(form_pasword.new_password .encode('utf-8'))
     user =  db.query(models.User).filter\
             (models.User.email == form_pasword.email).update\
                             (dict(password=hashed_password))
