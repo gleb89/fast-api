@@ -111,3 +111,5 @@ class EmailSchema(BaseModel):
 
 class EmailRessetPassword(EmailSchema):
     password:str
+    new_password:str
+    email:str
