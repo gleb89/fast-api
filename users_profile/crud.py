@@ -192,7 +192,7 @@ def get_user_by_email(db, email: schemas.EmailSchema):
             (models.User.email == email.email).update\
                             (dict(password=hashed_password_new))
         db.commit()
-        message = 'Ваш новый пароль : {password}\n '.encode('utf-8')
+        message = f'Ваш новый пароль : {password}\n '.encode('utf-8')
         server = smtplib.SMTP('smtp.mail.ru',587)
         server.starttls()
         server.login(LOGIN_EMAIL,PASSWORD_EMAIL)
