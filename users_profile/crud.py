@@ -14,6 +14,8 @@ from typing import Optional
 from config.db import get_db
 import smtplib
 import shutil
+import secrets
+import string
 from .schemas import UsId
 from config.email import LOGIN_EMAIL, PASSWORD_EMAIL
 import os
@@ -181,8 +183,16 @@ def user_by_login(db,email):
 
 def get_user_by_email(db, email: schemas.EmailSchema):
     user =  db.query(models.User).filter(models.User.email == email.email).first()
+
     if user:
-        message = 'для востановления пароля '.encode('utf-8')
+        alphabet = string.ascii_letters + string.digits
+        password = ''.join(secrets.choice(alphabet) for i in range(7))
+        hashed_password_new = pwd_context.hash(password.encode('utf-8'))
+        user =  db.query(models.User).filter\
+            (models.User.email == email.email).update\
+                            (dict(password=hashed_password_new))
+        db.commit()
+        message = 'Ваш новый пароль : {password}\n '.encode('utf-8')
         server = smtplib.SMTP('smtp.mail.ru',587)
         server.starttls()
         server.login(LOGIN_EMAIL,PASSWORD_EMAIL)
