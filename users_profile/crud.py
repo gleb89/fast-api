@@ -207,13 +207,19 @@ def get_user_by_email(db, email: schemas.EmailSchema):
 
 def reset_user_password(form_pasword,db):
     hashed_password = pwd_context.hash(form_pasword.new_password .encode('utf-8'))
-    user =  db.query(models.User).filter\
-            (models.User.email == form_pasword.email).update\
-                            (dict(password=hashed_password))
-
-    if user:
-        db.commit()
-        return JSONResponse(status_code=status.HTTP_200_OK,content={'message':'пароль успешно изменене'})
+    conf_user =  db.query(models.User).filter\
+            (models.User.email == form_pasword.email).first()
+    if conf_user:
+        ver_user_password = pwd_context.verify(form_pasword.password, conf_user.password)
+        if ver_user_password:
+            user =  db.query(models.User).filter\
+                (models.User.email == form_pasword.email).update\
+                                (dict(password=hashed_password))
+            db.commit()
+            return JSONResponse(status_code=status.HTTP_200_OK,content={'message':'пароль успешно изменен'})
+        else:
+            return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,\
+                         content={'message':'Неверно введен пароль из почты'})
     else:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,\
                          content={'message':'Неверно введен email'})
