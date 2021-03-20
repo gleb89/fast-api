@@ -17,7 +17,7 @@ services:
   web_api:
     restart: always
     build: .
-    command: uvicorn main:app --reload --workers 1 --host web_api --port 8000
+    command: uvicorn main:app --reload --workers 1 --host 0.0.0.0 --port 8080
     networks:
       - backands_network
     depends_on: 
@@ -35,8 +35,9 @@ services:
     networks:
       - backands_network
     ports:
-      - 8000:80
-      - 443:443
+      - "80:80"
+      # - 8000:80
+      # - 443:443
 
 networks:
   backands_network:
