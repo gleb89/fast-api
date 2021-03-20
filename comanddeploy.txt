@@ -1,0 +1,6 @@
+sudo /etc/init.d/nginx2 stop
+sudo netstat -tlnp
+#### - Docker start
+### docker-compose up --build
+### docker-compose up -d
+### docker-compose -f docker-compose.yml logs -f

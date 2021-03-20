@@ -1,9 +1,24 @@
-# Install Packages:
-pip install *requirements.txt*
 
-# Config Postgresql db:
-  -config/db.py
-  
-  
- # run fast-api:
-  -uvicorn main:app --reload
+# fastshop-api
+## touch .env
+## enviroment
+   - POSTGRES_USER
+   - POSTGRES_PASSWORD
+   - POSTGRES_DB
+   - LOGIN_EMAILu
+   - PASSWORD_EMAIL
+
+#### - Docker start
+### docker-compose up --build
+### docker-compose up -d
+### docker-compose -f docker-compose.yml logs -f
+
+
+
+
+
+
+#### - localhost start
+### virtualenv env
+### sourse/env/bin/activate
+### uvicorn main:app --reload
