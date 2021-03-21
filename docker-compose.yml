@@ -22,7 +22,7 @@ services:
     depends_on: 
       - db
     
-  server:
+  nginx:
     restart: always
     build: ./server_nginx/.
     volumes:

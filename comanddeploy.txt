@@ -4,3 +4,7 @@ sudo netstat -tlnp
 ### docker-compose up --build
 ### docker-compose up -d
 ### docker-compose -f docker-compose.yml logs -f
+POSTGRES_USER=hleb
+POSTGRES_PASSWORD=glebhleb
+POSTGRES_DB=tests
+
