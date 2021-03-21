@@ -1,4 +1,4 @@
-sudo /etc/init.d/nginx2 stop
+sudo /etc/init.d/nginx stop
 sudo netstat -tlnp
 #### - Docker start
 ### docker-compose up --build
@@ -7,4 +7,10 @@ sudo netstat -tlnp
 POSTGRES_USER=hleb
 POSTGRES_PASSWORD=glebhleb
 POSTGRES_DB=tests
+
+
+docker ps - список запущенных контейнеров
+docker network ls - список всех активных и неактивных сетей созданных docker'ом
+docker system prune - очистка всех остановленных контейнеров и неиспользуемых сетей
+docker-compose down - выполняется из корня проекта. Останавливает запущенный контейнер.
 
