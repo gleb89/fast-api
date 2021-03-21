@@ -1,5 +1,5 @@
 
-# fastshop-api
+# back zapic
 ## touch .env
 ## enviroment
    - POSTGRES_USER
