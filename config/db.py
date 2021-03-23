@@ -9,13 +9,15 @@ load_dotenv()
 
 
 
-SECRET_KEY = os.getenv('SECRET_KEY')
+# SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = 'ururuirjfmfmf'
 
 ALGORITHM = "HS256"
 USER = os.getenv('POSTGRES_USER')
 PASSWORD = os.getenv('POSTGRES_PASSWORD')
 DB = os.getenv('POSTGRES_DB')
 SQLALCHEMY_DATABASE_URL = f"postgresql://{USER}:{PASSWORD}@db:5432/{DB}"
+
 
 
 

@@ -7,6 +7,7 @@
    - POSTGRES_DB
    - LOGIN_EMAILu
    - PASSWORD_EMAIL
+   - SECRET_KEY
 
 #### - Docker start
 ### docker-compose up --build

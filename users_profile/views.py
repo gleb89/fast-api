@@ -53,8 +53,7 @@ def login_for_access_token(form_data:OAuth2PasswordRequestForm = Depends() ,db: 
 
 
 @user_router.post("/login")
-def login_for_access_token(form_data:schemas.UserLogin ,db: Session = Depends(get_db)):
-
+async def login_for_access_token2(form_data:schemas.UserLogin ,db: Session = Depends(get_db)):
     """Return jwt token,authorization"""
     user = authenticate_user(db , form_data.email, form_data.password)
     user_login = user_by_login(db,form_data.email)
