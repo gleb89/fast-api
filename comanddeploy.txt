@@ -1,5 +1,6 @@
 sudo /etc/init.d/nginx stop
-sudo netstat -tlnp
+chmod +x init-letsencrypt.sh
+./init-letsencrypt.sh
 #### - Docker start
 ### docker-compose up --build
 ### docker-compose up -d
@@ -7,6 +8,9 @@ sudo netstat -tlnp
 POSTGRES_USER=hleb
 POSTGRES_PASSWORD=glebhleb
 POSTGRES_DB=tests
+LOGIN_EMAIL=beautyroom37@mail.ru
+PASSWORD_EMAIL=Polina072020
+
 
 
 docker ps - список запущенных контейнеров
