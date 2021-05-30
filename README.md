@@ -1,5 +1,5 @@
 
-# back zapic
+# back zapic fastapi(python) orm sqlalchemy
 ## touch .env
 ## enviroment
    - POSTGRES_USER
